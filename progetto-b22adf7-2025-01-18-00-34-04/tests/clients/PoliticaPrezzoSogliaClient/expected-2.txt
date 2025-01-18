@@ -1,0 +1,3 @@
+Apple2pt, 39
+Microsoft2pt, 43
+Tesla2pt, 31
