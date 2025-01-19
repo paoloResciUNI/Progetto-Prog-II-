@@ -1,3 +1,0 @@
-Apple1pv, 2
-Microsoft1pv, 3
-Tesla1pv, 2
