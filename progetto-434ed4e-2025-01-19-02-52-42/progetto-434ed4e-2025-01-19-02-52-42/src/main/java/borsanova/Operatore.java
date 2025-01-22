@@ -39,8 +39,7 @@ public class Operatore implements Comparable<Operatore> {
     public Operatore(String nomeOperatore) {
         nome = nomeOperatore;
         budget = 0; 
-        @SuppressWarnings("unused")
-        TreeMap<Azione, Integer> azioniPossedute = new TreeMap<Azione, Integer>();
+        azioniPossedute = new TreeMap<Azione, Integer>();
     }
 
     /**

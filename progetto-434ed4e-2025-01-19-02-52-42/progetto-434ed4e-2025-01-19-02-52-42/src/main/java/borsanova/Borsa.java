@@ -38,8 +38,8 @@ public class Borsa implements Comparable<Borsa> {
      */
     private Borsa(String nome) {
         this.nome = nome;
-        SortedSet<Azienda> aziendeQuotate = new TreeSet<>();
-        SortedSet<Operatore> operatoriBorsa = new TreeSet<>();
+        aziendeQuotate = new TreeSet<>();
+        operatoriBorsa = new TreeSet<>();
     }
 
     /**
@@ -115,6 +115,11 @@ public class Borsa implements Comparable<Borsa> {
         return nome.compareTo(altraBorsa.nome);
     }
 
+    @Override
+    public String toString() {
+        return nome+ ": " + aziendeQuotate.toString() + "\n";
+    }
+
     /**
      * Azione associata alla singola azienda. 
      */
@@ -151,7 +156,7 @@ public class Borsa implements Comparable<Borsa> {
             quantità = numeroAzioni;
         }
 
-        
+
 
         /**
          * Prendo il nome dell'azinda che ha emesso l'azione. 

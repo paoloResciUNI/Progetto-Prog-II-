@@ -18,10 +18,14 @@ You should have received a copy of the GNU General Public License
 along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 */
-
 package clients;
 
-/** Client di test per alcune funzionalità relative alle <strong>azioni</strong>. */
+import java.util.*;
+import borsanova.*;
+
+/**
+ * Client di test per alcune funzionalità relative alle <strong>azioni</strong>.
+ */
 public class AzioneClient {
 
   /** . */
@@ -40,5 +44,39 @@ public class AzioneClient {
    * numero (separati da virgole). Assuma che il nome dell'azienda non contenga
    * spazi.
    */
-  
+  public static void main(String args[]) {
+    if (args.length < 1) {
+      System.err.println("Errore: specificare il nome della borsa come parametro.");
+      System.exit(1);
+    }
+    String nomeBorsa = args[0];
+    borsanova.Borsa borsa = borsanova.Borsa.of(nomeBorsa);
+    try (Scanner scanner = new Scanner(System.in)){
+      while (scanner.hasNextLine()) {
+            String stringaIngresso = scanner.nextLine();
+            String[] dati = stringaIngresso.split(" ");
+            if (dati.length != 3) {
+                System.err.println("Errore: formato della linea di input non valido.");
+                continue;
+            }
+
+            String nomeAzienda = dati[0];
+            int numero = 0;
+            int prezzoUnitario = 0;
+
+            try {
+                numero = Integer.parseInt(dati[1]);
+                prezzoUnitario = Integer.parseInt(dati[2]);
+                Azienda azienda = Azienda.of(nomeAzienda);
+                azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
+            } catch (NumberFormatException e) {
+                System.err.println("Errore: numero o prezzo_unitario non validi.");
+                continue;
+            }
+      }
+    } catch (Exception e) {
+      System.err.println("Errore: " + e.getMessage());
+    }
+    System.out.println();  
+  }
 }
