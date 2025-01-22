@@ -28,7 +28,7 @@ public class AzioneClient {
   private AzioneClient() {}
 
   /*-
-   * Scriva un [@code main} che, ricevuto un nome di borsa come parametro sulla
+   * Scriva un {@code main} che, ricevuto un nome di borsa come parametro sulla
    * linea di comando, legge dal flusso in ingresso una sequenza di linee della
    * forma
    *
@@ -40,4 +40,5 @@ public class AzioneClient {
    * numero (separati da virgole). Assuma che il nome dell'azienda non contenga
    * spazi.
    */
+  
 }

@@ -16,7 +16,7 @@ public class Operatore implements Comparable<Operatore> {
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
     /**{@code azioniPossedute} una collezioni che contiene tutte le azioni possedute da questo operatore*/
-    private HashMap<Azione, Integer> azioniPossedute;
+    private TreeMap<Azione, Integer> azioniPossedute;
     
     /**
      * Fabbricatore dell'operatore
@@ -39,7 +39,24 @@ public class Operatore implements Comparable<Operatore> {
     public Operatore(String nomeOperatore) {
         nome = nomeOperatore;
         budget = 0; 
-        HashMap<Azione, Integer> azioniPossedute = new HashMap<>();
+        @SuppressWarnings("unused")
+        TreeMap<Azione, Integer> azioniPossedute = new TreeMap<Azione, Integer>();
+    }
+
+    /**
+     * Restituisce la quantità di azioni possedute dall'operatore.
+     * @param nomeAzienda l'azienda di cui si vuole sapere la quantità di azioni possedute.
+     * @return il numero di azioni della specifica azienda possedute dall'operatore.
+     * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
+     */
+    public Integer mostraAzioniPossedute(Azienda nomeAzienda) {
+      for (Azione a : azioniPossedute.keySet()) {
+        if(a.aziendaAzione().equals(nomeAzienda.toString())){
+
+          return azioniPossedute.get(a);
+        }
+      }
+      throw new NoSuchElementException("L'operatore non ha stock di questa azienda");
     }
 
     /**
@@ -63,6 +80,18 @@ public class Operatore implements Comparable<Operatore> {
       nomeBorsa.aggiungiOperatore(this);
     }
 
+    /**
+     * Un'operatore decide di vendere una o più azioni nella borsa.
+     * @param azione l'azione che l'operatore vuole vendere.
+     * @param quantità la quantità di azioni che l'operatore vuole vendere.
+     * @throw IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
+     */
+    public void vendi(Azione azione, int quantità) {
+      if (azioniPossedute.get(azione) < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
+      azioniPossedute.put(azione, azioniPossedute.get(azione) - quantità);
+      budget += azione.valoreAzione() * quantità;
+    }
+
 
     /**
      * Deposito di fondi dentro il budget.
@@ -75,8 +104,10 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Prelievo di fondi dal budget.
      * @param daPrelevare quantità di denaro da prelevare.
+     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare questa somma.
      */
     public void preleva(int daPrelevare) {
+      if (daPrelevare > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");
       budget -= daPrelevare;
     }
 

@@ -1,10 +1,6 @@
 package borsanova;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * La borsa tiene traccia di tutte le aziende quotate e delle loro azioni. Tiene anche traccia di tutti gli operatori che 
@@ -79,6 +75,22 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
+     * Ricerca del numero di azioni disponibili nella borsa. 
+     * @param nomeAzione è il nome dell'azione da cercare.
+     * @return il numeor di azioni disponibili ancora in questa borsa.
+     */
+    public int azioniDisponibili(Azienda nomeAzione) {
+        int disponibili = 0; 
+        int comprate = 0;
+        for (Azione a: aziendeQuotate) {
+            if (nomeAzione.toString().equals(a.toString())) disponibili = a.quantitaAzioni();
+        }
+        for (Operatore o: operatoriBorsa) {
+            comprate += o.mostraAzioniPossedute(nomeAzione);
+        }
+        return disponibili - comprate;
+    }
+    /**
      * Aggiunge un operatore alla borsa.
      * @param nuovoOperatore il nuovo operatore da aggiungere alla borsa.
      */
@@ -116,9 +128,13 @@ public class Borsa implements Comparable<Borsa> {
 
         /**
          * AF:
-         *      
+         *    L'azione è associata ad una singola azienda.
+         *    L'azione ha un valore per singola azione.
+         *    L'azione ha una quantità di azioni disponibili. 
          * RI: 
-         *      
+         *    L'azienda a cui è associata l'azione non può essere vuota o null.
+         *    Il valore per singola azione deve essere > 0.
+         *    L'azienda deve avere un numero di azioni disponibili > 0.
          */
 
         /**
@@ -135,11 +151,13 @@ public class Borsa implements Comparable<Borsa> {
             quantità = numeroAzioni;
         }
 
+        
+
         /**
          * Prendo il nome dell'azinda che ha emesso l'azione. 
          * @return il nome dall'azienda.
          */
-        public String aziendaAzione() {
+        public String  aziendaAzione() {
             return azienda;
         }
 
