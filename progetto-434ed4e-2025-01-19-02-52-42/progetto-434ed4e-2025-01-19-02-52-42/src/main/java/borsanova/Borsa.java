@@ -1,5 +1,7 @@
 package borsanova;
 
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -67,13 +69,21 @@ public class Borsa implements Comparable<Borsa> {
      * Cerca l'azione di un'azienda quotata in borsa.
      * @param nomeAzione il nome dell'azienda di cui si voglia prendere l'azione. 
      * @return l'azione dell'azienda cerca che si è quotata in questa borsa.
-     * @throws IllegalArgumentException se l'azienda cerca non è quotata in questa borsa. 
+     * @throws NoSuchElementException se l'azienda cerca non è quotata in questa borsa. 
      */
-    public Azione cercaAzioneBorsa(String nomeAzione) throws IllegalArgumentException {
+    public Azione cercaAzioneBorsa(Azienda nomeAzione) throws NoSuchElementException {
         for (Azione a: aziendeQuotate) {
-            if (nomeAzione.equals(a.aziendaAzione())) return a;  
+            if (nomeAzione.toString().equals(a.toString())) return a;  
         }
-        throw new IllegalArgumentException("Bisogna prendere le azione di un'azienda quotata in questa borsa.");
+        throw new NoSuchElementException("Bisogna prendere le azione di un'azienda quotata in questa borsa.");
+    }
+
+    /**
+     * Aggiunge un operatore alla borsa.
+     * @param nuovoOperatore il nuovo operatore da aggiungere alla borsa.
+     */
+    public void aggiungiOperatore(Operatore nuovoOperatore) {
+        operatoriBorsa.add(nuovoOperatore);
     }
 
     @Override 
@@ -145,7 +155,7 @@ public class Borsa implements Comparable<Borsa> {
          * Restituisce la quantità di azioni disponibili. 
          * @return la quantità delle aziende disponibili per l'acquisto. 
          */
-        public int quantitàAzioni() {
+        public int quantitaAzioni() {
             return quantità;
         }
 

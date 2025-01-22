@@ -1,8 +1,8 @@
 package borsanova;
 
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
+
+import borsanova.Borsa.Azione;
 
 /**
  * L'operatore può comprare e vendere azioni delle aziende quotate in bora.
@@ -16,7 +16,7 @@ public class Operatore implements Comparable<Operatore> {
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
     /**{@code azioniPossedute} una collezioni che contiene tutte le azioni possedute da questo operatore*/
-    private SortedSet<Borsa.Azione> azioniPossedute;
+    private HashMap<Azione, Integer> azioniPossedute;
     
     /**
      * Fabbricatore dell'operatore
@@ -39,30 +39,37 @@ public class Operatore implements Comparable<Operatore> {
     public Operatore(String nomeOperatore) {
         nome = nomeOperatore;
         budget = 0; 
-        SortedSet<Borsa.Azione> azioniPossedute = new TreeSet<>();
+        HashMap<Azione, Integer> azioniPossedute = new HashMap<>();
     }
-
-
-    // public void vendi() {}
 
     /**
      * Un'operatore decide di acquistare una o più azioni. 
      * @param nomeBorsa è la borsa dal quale l'operatore vuole comprare le azioni dell'azienda che gli interessa.
-     * @param nomeAzione è il nome dell'azione di cui l'operatore vuole acquistare le azioni. 
+     * @param nomeAzione è il nome dell'azienda di cui l'operatore vuole acquistare le azioni. 
      * @param liquiditàNecessaria il costo richiesto dall'investimento. 
      * @throws IllegalArgumentException se viene inserito un numero troppo grande di azioni da acquistare rispetto 
      * a quelle acquistabili.
      */
-    public void investi(Borsa nomeBorsa, String nomeAzione, int liquiditàNecessaria) throws IllegalArgumentException {
-         
+    public void investi(Borsa nomeBorsa, Azienda nomeAzione, int liquiditàNecessaria) throws IllegalArgumentException {  
+      Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
+      if (liquiditàNecessaria > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (liquiditàNecessaria > azione.valoreAzione()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (liquiditàNecessaria > azione.quantitaAzioni()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
+      Integer azioniComprate = liquiditàNecessaria / azione.valoreAzione();
+      int resto = liquiditàNecessaria % azione.valoreAzione();
+      budget += resto;
+      budget -= liquiditàNecessaria;
+      azioniPossedute.put(azione, azioniComprate);
+      nomeBorsa.aggiungiOperatore(this);
     }
+
 
     /**
      * Deposito di fondi dentro il budget.
      * @param daDepositare la quantità da depositare.
      */
     public void deposita(int daDepositare) {
-
+      budget += daDepositare;
     }
 
     /**
@@ -70,7 +77,7 @@ public class Operatore implements Comparable<Operatore> {
      * @param daPrelevare quantità di denaro da prelevare.
      */
     public void preleva(int daPrelevare) {
-
+      budget -= daPrelevare;
     }
 
     @Override
