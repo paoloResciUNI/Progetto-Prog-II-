@@ -21,11 +21,17 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
-/** Client di test per alcune funzionalità relative alle <strong>borse</strong>. */
+import borsanova.*;
+import java.util.*;
+
+/**
+ * Client di test per alcune funzionalità relative alle <strong>borse</strong>.
+ */
 public class BorsaClient {
 
   /** . */
-  private BorsaClient() {}
+  private BorsaClient() {
+  }
 
   /*-
    * Scriva un [@code main} che legge dal flusso in ingresso una sequenza di tre
@@ -64,4 +70,89 @@ public class BorsaClient {
    * prefissate da -), e per ognuna di esse i nomi degli operatori e delle
    * quantità che ne possiedono (in ordine alfabetico, prefissati da =).
    */
+  public static void main(String[] args) {
+    Scanner in = new Scanner(System.in);
+    SortedSet<Borsa> borse = new TreeSet<>();
+    SortedSet<Azienda> aziende = new TreeSet<>();
+    SortedSet<Operatore> operatori = new TreeSet<>();
+    while (in.hasNext()) {
+      String line = in.nextLine();
+      if (line.equals("--"))
+        break;
+      String[] tokens = line.split(" ");
+      Borsa borsa = null;
+      Azienda azienda = null;
+      for (Borsa b : borse) {
+        if (b.nome().equals(tokens[1])) {
+          borsa = b;
+        }
+      }
+      if (borsa == null) {
+        borsa = Borsa.of(tokens[1]);
+        borse.add(borsa);
+      }
+      for (Azienda a : aziende) {
+        if (a.nome().equals(tokens[0])) {
+          azienda = a;
+        }
+      }
+      if (azienda == null) {
+        azienda = Azienda.of(tokens[0]);
+        aziende.add(azienda);
+      }
+      azienda.quotazioneInBorsa(borsa, Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+    }
+    while (in.hasNext()) {
+      String line = in.nextLine();
+      if (line.equals("--"))
+        break;
+      String[] tokens = line.split(" ");
+      Operatore operatore = Operatore.of(tokens[0]);
+      operatori.add(operatore);
+      operatore.deposita(Integer.parseInt(tokens[1]));
+    }
+    while (in.hasNext()) {
+      String line = in.nextLine();
+      String[] tokens = line.split(" ");
+      Operatore operatoreDaConsiderare = null;
+      Borsa borsaDaConsiderare = null;
+      Azienda aziendaDaConsiderare = null;
+      for (Operatore operatore : operatori) {
+        if (operatore.nome().equals(tokens[0])) {
+          operatoreDaConsiderare = operatore;
+        }
+      }
+      for (Borsa borsa : borse) {
+        if (borsa.nome().equals(tokens[2])) {
+          borsaDaConsiderare = borsa;
+        }
+      }
+      for (Azienda azienda : aziende) {
+        if (azienda.nome().equals(tokens[3])) {
+          aziendaDaConsiderare = azienda;
+        }
+      }
+      if (tokens[1].equals("b")) {
+        operatoreDaConsiderare.investi(borsaDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
+      } else if (tokens[1].equals("s")) {
+        Borsa.Azione azioneDaVendere = null;
+        azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
+        operatoreDaConsiderare.vendi(azioneDaVendere, Integer.parseInt(tokens[4]));
+      }
+    }
+    for (Borsa borsa : borse) {
+      System.out.println(borsa.nome());
+      Iterator<Borsa.Azione> azioniNellaBorsa = borsa.aziendeQuotate();
+      while (azioniNellaBorsa.hasNext()) {
+        Borsa.Azione action = azioniNellaBorsa.next();
+        System.out.println("- " + action.azienda().nome() + " " + action.quantita());
+        for (Operatore operatore : operatori) {
+          if (operatore.possiedeAzione(action) && operatore.mostraAzioniPossedute(action.azienda()) >0) {
+            System.out.println("= " + operatore.nome() + " " + operatore.mostraAzioniPossedute(action.azienda()));
+          }
+        }
+      }
+
+    }
+  }
 }

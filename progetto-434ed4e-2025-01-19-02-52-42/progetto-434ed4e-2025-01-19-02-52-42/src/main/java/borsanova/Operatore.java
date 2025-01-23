@@ -43,38 +43,58 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
+     * Restituisce il nome dell'operatore.
+     * @return il nome dell'operatore.
+     */
+    public String nome() {
+        return nome;
+    }
+
+    /**
      * Restituisce la quantità di azioni possedute dall'operatore.
      * @param nomeAzienda l'azienda di cui si vuole sapere la quantità di azioni possedute.
      * @return il numero di azioni della specifica azienda possedute dall'operatore.
      * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
+     * @throws NullPointerException se l'azienda è null.
      */
     public Integer mostraAzioniPossedute(Azienda nomeAzienda) {
+      Objects.requireNonNull(nomeAzienda, "L'azienda non può essere null.");
       for (Azione a : azioniPossedute.keySet()) {
-        if(a.aziendaAzione().equals(nomeAzienda.toString())){
-
-          return azioniPossedute.get(a);
-        }
+        if(a.azienda().nome().equals(nomeAzienda.nome())) return azioniPossedute.get(a);
       }
       throw new NoSuchElementException("L'operatore non ha stock di questa azienda");
+    }
+    
+    /**
+     * Se l'operatore trova l'azione nelle azioni possedute.
+     * @param azione l'azione da conoscere.
+     * @return {@code true} se l'azione è posseduta, {@code false} altrimenti.
+     */
+    public boolean possiedeAzione(Azione azione) {
+      Objects.requireNonNull(azione, "L'azione non può essere null.");
+      return azioniPossedute.containsKey(azione);
     }
 
     /**
      * Un'operatore decide di acquistare una o più azioni. 
      * @param nomeBorsa è la borsa dal quale l'operatore vuole comprare le azioni dell'azienda che gli interessa.
      * @param nomeAzione è il nome dell'azienda di cui l'operatore vuole acquistare le azioni. 
-     * @param liquiditàNecessaria il costo richiesto dall'investimento. 
+     * @param investimento l'investimento. 
      * @throws IllegalArgumentException se viene inserito un numero troppo grande di azioni da acquistare rispetto 
      * a quelle acquistabili.
+     * @throws NullPointerException se la borsa o l'azienda sono null.
      */
-    public void investi(Borsa nomeBorsa, Azienda nomeAzione, int liquiditàNecessaria) throws IllegalArgumentException {  
+    public void investi(Borsa nomeBorsa, Azienda nomeAzione, int investimento) throws IllegalArgumentException { 
+      Objects.requireNonNull(nomeBorsa, "La borsa non può essere null.");
+      Objects.requireNonNull(nomeAzione, "L'azienda non può essere null.");  
       Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
-      if (liquiditàNecessaria > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
-      if (liquiditàNecessaria > azione.valoreAzione()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
-      if (liquiditàNecessaria > azione.quantitaAzioni()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
-      Integer azioniComprate = liquiditàNecessaria / azione.valoreAzione();
-      int resto = liquiditàNecessaria % azione.valoreAzione();
+      if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
+      Integer azioniComprate = investimento / azione.valore();
+      int resto = investimento % azione.valore();
       budget += resto;
-      budget -= liquiditàNecessaria;
+      budget -= investimento;
       azioniPossedute.put(azione, azioniComprate);
       nomeBorsa.aggiungiOperatore(this);
     }
@@ -83,12 +103,14 @@ public class Operatore implements Comparable<Operatore> {
      * Un'operatore decide di vendere una o più azioni nella borsa.
      * @param azione l'azione che l'operatore vuole vendere.
      * @param quantità la quantità di azioni che l'operatore vuole vendere.
-     * @throw IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
+     * @throws IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
+     * @throws NullPointerException se l'azione è null.
      */
     public void vendi(Azione azione, int quantità) {
+      Objects.requireNonNull(azione, "L'azione non può essere null.");
       if (azioniPossedute.get(azione) < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
       azioniPossedute.put(azione, azioniPossedute.get(azione) - quantità);
-      budget += azione.valoreAzione() * quantità;
+      budget += azione.valore() * quantità;
     }
 
 
@@ -123,6 +145,7 @@ public class Operatore implements Comparable<Operatore> {
   
     @Override
     public int compareTo(Operatore other) {
+      
       return nome.compareTo(other.nome);
     }
 

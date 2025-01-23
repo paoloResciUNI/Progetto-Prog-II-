@@ -63,16 +63,21 @@ public class Azienda implements Comparable<Azienda> {
      * @param nomeBorsa di tipo {@code Borsa}, indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni di tipo {@code int}, il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione di tipo {@code int}, il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni} e {@code valorePerAzione} è minore o uguale a 0.   
+     * @throws IllegalArgumentException se {@code numeroAzioni} e {@code valorePerAzione} è minore o uguale a 0.  
+     * @throws NullPointerException se {@code nomeBorsa} è {@code null}. 
      */
     public void quotazioneInBorsa(Borsa nomeBorsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException {
+        Objects.requireNonNull(nomeBorsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
-        nomeBorsa.aggiungiAzione(nome, valorePerAzione, numeroAzioni);
+        nomeBorsa.aggiungiAzione(this, valorePerAzione, numeroAzioni);
         borseQuotate.add(nomeBorsa);
     }
-
-    @Override
-    public String toString() {
+    
+    /**
+     * restituisce il nome dell'azienda.
+     * @return il nome dell'azienda.
+     */
+    public String nome() {
         return nome;
     }
 

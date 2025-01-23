@@ -29,7 +29,8 @@ import borsanova.*;
 public class AzioneClient {
 
   /** . */
-  private AzioneClient() {}
+  private AzioneClient() {
+  }
 
   /*-
    * Scriva un {@code main} che, ricevuto un nome di borsa come parametro sulla
@@ -51,32 +52,24 @@ public class AzioneClient {
     }
     String nomeBorsa = args[0];
     borsanova.Borsa borsa = borsanova.Borsa.of(nomeBorsa);
-    try (Scanner scanner = new Scanner(System.in)){
+    try (Scanner scanner = new Scanner(System.in)) {
       while (scanner.hasNextLine()) {
-            String stringaIngresso = scanner.nextLine();
-            String[] dati = stringaIngresso.split(" ");
-            if (dati.length != 3) {
-                System.err.println("Errore: formato della linea di input non valido.");
-                continue;
-            }
-
-            String nomeAzienda = dati[0];
-            int numero = 0;
-            int prezzoUnitario = 0;
-
-            try {
-                numero = Integer.parseInt(dati[1]);
-                prezzoUnitario = Integer.parseInt(dati[2]);
-                Azienda azienda = Azienda.of(nomeAzienda);
-                azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
-            } catch (NumberFormatException e) {
-                System.err.println("Errore: numero o prezzo_unitario non validi.");
-                continue;
-            }
+        String stringaIngresso = scanner.nextLine();
+        String[] dati = stringaIngresso.split(" ");
+        String nomeAzienda = dati[0];
+        int numero = 0;
+        int prezzoUnitario = 0;
+        numero = Integer.parseInt(dati[1]);
+        prezzoUnitario = Integer.parseInt(dati[2]);
+        Azienda azienda = Azienda.of(nomeAzienda);
+        //System.out.println(azienda.nome() + " " + numero + " " + prezzoUnitario);
+        azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
       }
-    } catch (Exception e) {
-      System.err.println("Errore: " + e.getMessage());
     }
-    System.out.println();  
+    Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+    while (azioni.hasNext()) {
+      Borsa.Azione azione = azioni.next();
+      System.out.println(azione.azienda().nome() + ", " + azione.valore() + ", " + azione.quantita());  
+    }
   }
 }
