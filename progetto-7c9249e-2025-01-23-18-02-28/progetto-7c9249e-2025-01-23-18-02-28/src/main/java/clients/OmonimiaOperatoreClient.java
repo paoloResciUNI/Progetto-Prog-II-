@@ -21,6 +21,10 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
+import java.util.*;
+
+import borsanova.*;
+
 /** Client di test per alcune funzionalità relative alle <strong>aziende</strong>. */
 public class OmonimiaOperatoreClient {
 
@@ -33,5 +37,25 @@ public class OmonimiaOperatoreClient {
    * emette nel flusso d'uscita l'elenco di tali nomi di operatore in ordine
    * alfabetico e senza ripetizioni.
    */
-
+  public static void main(String[] args) {
+    SortedSet<Operatore>  operatori = new TreeSet<>();
+    Scanner scanner = new Scanner(System.in);
+    while (scanner.hasNext()) {
+      Operatore operatore = null;
+      String stringaIn = scanner.nextLine();
+      for (Operatore o : operatori) {
+        if (o.nome().equals(stringaIn)) {
+          operatore = o;
+          break;
+        }
+      }
+      if (operatore == null) {
+        operatore = Operatore.of(stringaIn);
+        operatori.add(operatore);
+      }
+    }
+    for (Operatore operatore : operatori) {
+      System.out.println(operatore.nome());
+    }
+  }
 }

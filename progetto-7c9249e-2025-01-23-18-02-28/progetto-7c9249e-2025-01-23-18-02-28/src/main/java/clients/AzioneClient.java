@@ -62,7 +62,6 @@ public class AzioneClient {
         numero = Integer.parseInt(dati[1]);
         prezzoUnitario = Integer.parseInt(dati[2]);
         Azienda azienda = Azienda.of(nomeAzienda);
-        //System.out.println(azienda.nome() + " " + numero + " " + prezzoUnitario);
         azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
       }
     }

@@ -21,17 +21,41 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
+import borsanova.*;
+import java.util.*;
+
+
 /** Client di test per alcune funzionalità relative alle <strong>aziende</strong>. */
-public class OmonimiaBorsaClient {
+public class OmonimiaAziendaClient {
 
   /** . */
-  private OmonimiaBorsaClient() {}
+  private OmonimiaAziendaClient() {}
 
   /*-
    * Scriva un {@code main} che legge dal flusso di ingresso una sequenza di
-   * linee, ciascuna delle quali corrispondente ad un nome di borsa ed emette
-   * nel flusso d'uscita l'elenco di tali nomi di borsa in ordine alfabetico e
+   * linee, ciascuna delle quali corrispondente ad un nome di azienda ed emette
+   * nel flusso d'uscita l'elenco di tali nomi di azienda in ordine alfabetico e
    * senza ripetizioni.
    */
-
+  public static void main(String[] args) {
+    SortedSet<Azienda> aziende = new TreeSet<>();
+    Scanner scanner = new Scanner(System.in);
+    while (scanner.hasNext()) {
+      Azienda azienda = null;
+      String stringaIn = scanner.nextLine();
+      for (Azienda  a : aziende) {
+        if (a.nome().equals(stringaIn)) {
+          azienda = a;
+          break;
+        }
+      }
+      if (azienda == null) {
+        azienda = Azienda.of(stringaIn);
+        aziende.add(azienda);
+      }
+    }
+    for (Azienda azienda : aziende) {
+      System.out.println(azienda.nome());
+    }
+  }
 }

@@ -23,4 +23,3 @@ Buffet1o s Milano1o Apple1o 30
 Lynch1o b London1o Tesla1o 1000
 Lynch1o s London1o Tesla1o 20
 Buffet1o b Milano1o Apple1o 2800
-

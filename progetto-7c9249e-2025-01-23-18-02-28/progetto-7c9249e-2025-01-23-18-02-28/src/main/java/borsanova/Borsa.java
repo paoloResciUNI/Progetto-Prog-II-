@@ -193,6 +193,10 @@ public class Borsa implements Comparable<Borsa> {
             return azienda;
         }
 
+        /**
+         * Restituisce il nome della borsa.
+         * @return il nome di questa borsa.
+         */
         public String borsa() {
             return nome;
         }

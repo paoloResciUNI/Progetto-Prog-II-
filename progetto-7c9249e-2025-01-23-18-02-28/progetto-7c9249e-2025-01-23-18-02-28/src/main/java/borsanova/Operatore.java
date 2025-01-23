@@ -51,6 +51,14 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
+     * Restituisce il budget attuale dell'operatore.
+     * @return il budget di questo operatore.
+     */
+    public int budget() {
+      return budget;
+    }
+
+    /**
      * Restituisce la quantità di azioni possedute dall'operatore.
      * @param nomeAzienda l'azienda di cui si vuole sapere la quantità di azioni possedute.
      * @return il numero di azioni della specifica azienda possedute dall'operatore.
@@ -92,11 +100,15 @@ public class Operatore implements Comparable<Operatore> {
       if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
       Integer azioniComprate = investimento / azione.valore();
-      int resto = investimento % azione.valore();
-      budget += resto;
-      budget -= investimento;
-      azioniPossedute.put(azione, azioniComprate);
-      nomeBorsa.aggiungiOperatore(this);
+      preleva(azioniComprate * azione.valore());
+      if (!possiedeAzione(azione)) {
+        azioniPossedute.put(azione, azioniComprate);
+        nomeBorsa.aggiungiOperatore(this);
+      } else {
+        Integer nuovaQuatita = mostraAzioniPossedute(nomeAzione);
+        nuovaQuatita += azioniComprate;
+        azioniPossedute.put(azione, nuovaQuatita);
+      }
     }
 
     /**
@@ -113,12 +125,33 @@ public class Operatore implements Comparable<Operatore> {
       budget += azione.valore() * quantità;
     }
 
+    /**
+     * Ritorna il valore totale di tutte le azioni possedute dall'operatore.
+     * @return un intero raprresentante il valore di tutte le azioni possedute, se l'operatore non ne possiede restituisce 0.
+     */
+    public int valoreAzioni() {
+      int valoreTotale = 0; 
+      for (Map.Entry<Azione, Integer> elemento: azioniPossedute.entrySet()) {
+        valoreTotale += elemento.getKey().valore() * elemento.getValue();
+       }
+       return valoreTotale;
+    }
+
+    /**
+     * Restituisce un iteratore alle sole azioni possedute dall'operatore.
+     * @return l'iteratore alle azioni possedute da questo operatore. 
+     */
+    public Iterator<Azione> elencoAzioni() {
+      return azioniPossedute.keySet().iterator();
+    }
 
     /**
      * Deposito di fondi dentro il budget.
      * @param daDepositare la quantità da depositare.
+     * @throws IllegalArgumentException se {@code daDepositare} è minore o uguale a 0.
      */
     public void deposita(int daDepositare) {
+      if (daDepositare <= 0) throw new IllegalArgumentException("Il deposito non può avere valore nullo o negativo.");
       budget += daDepositare;
     }
 
@@ -145,7 +178,6 @@ public class Operatore implements Comparable<Operatore> {
   
     @Override
     public int compareTo(Operatore other) {
-      
       return nome.compareTo(other.nome);
     }
 

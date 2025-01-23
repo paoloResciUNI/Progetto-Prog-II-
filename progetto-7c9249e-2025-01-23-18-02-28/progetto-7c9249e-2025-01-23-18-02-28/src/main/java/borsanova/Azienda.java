@@ -1,8 +1,6 @@
 package borsanova;
 
-import java.util.SortedSet;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * L'azinda può emettere le azioni quotandosi in borsa. 
@@ -73,6 +71,14 @@ public class Azienda implements Comparable<Azienda> {
         borseQuotate.add(nomeBorsa);
     }
     
+    /**
+     * Restituisce un iteratore per le borse quotate in questa azienda.
+     * @return un iteratore per le borse quotate in questa azienda.
+     */
+    public Iterator<Borsa> borseQuotate() {
+        return Collections.unmodifiableCollection(borseQuotate).iterator();
+    }
+
     /**
      * restituisce il nome dell'azienda.
      * @return il nome dell'azienda.
