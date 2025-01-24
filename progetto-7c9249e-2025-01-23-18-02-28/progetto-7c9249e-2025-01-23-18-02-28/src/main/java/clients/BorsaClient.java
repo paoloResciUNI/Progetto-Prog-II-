@@ -71,10 +71,10 @@ public class BorsaClient {
    * quantità che ne possiedono (in ordine alfabetico, prefissati da =).
    */
   public static void main(String[] args) {
-    Scanner in = new Scanner(System.in);
     SortedSet<Borsa> borse = new TreeSet<>();
     SortedSet<Azienda> aziende = new TreeSet<>();
     SortedSet<Operatore> operatori = new TreeSet<>();
+   try(Scanner in = new Scanner(System.in)) {
     while (in.hasNext()) {
       String line = in.nextLine();
       if (line.equals("--"))
@@ -140,6 +140,7 @@ public class BorsaClient {
         operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
       }
     }
+  }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
       Iterator<Borsa.Azione> azioniNellaBorsa = borsa.aziendeQuotate();

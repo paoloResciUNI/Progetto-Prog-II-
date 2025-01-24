@@ -39,7 +39,7 @@ public class OmonimiaBorsaClient {
    */
   public static void main(String[] args) {
     SortedSet<Borsa> borse = new TreeSet<>();
-    Scanner scanner = new Scanner(System.in);
+    try(Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
       Borsa borsa = null;
       String stringaIn = scanner.nextLine();
@@ -54,6 +54,7 @@ public class OmonimiaBorsaClient {
         borse.add(borsa);
       }
     }
+  }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
     }

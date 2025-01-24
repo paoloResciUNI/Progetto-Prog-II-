@@ -39,7 +39,7 @@ public class OmonimiaAziendaClient {
    */
   public static void main(String[] args) {
     SortedSet<Azienda> aziende = new TreeSet<>();
-    Scanner scanner = new Scanner(System.in);
+   try ( Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
       Azienda azienda = null;
       String stringaIn = scanner.nextLine();
@@ -54,6 +54,7 @@ public class OmonimiaAziendaClient {
         aziende.add(azienda);
       }
     }
+  }
     for (Azienda azienda : aziende) {
       System.out.println(azienda.nome());
     }

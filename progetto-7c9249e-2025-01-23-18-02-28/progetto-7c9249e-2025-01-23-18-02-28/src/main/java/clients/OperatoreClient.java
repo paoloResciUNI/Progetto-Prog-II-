@@ -79,10 +79,10 @@ public class OperatoreClient {
    * da virgole).
    */
   public static void main(String[] args) {
-       Scanner in = new Scanner(System.in);
     SortedSet<Borsa> borse = new TreeSet<>();
     SortedSet<Azienda> aziende = new TreeSet<>();
     SortedSet<Operatore> operatori = new TreeSet<>();
+    try(Scanner in = new Scanner(System.in)) {
     while (in.hasNext()) {
       String line = in.nextLine();
       if (line.equals("--"))
@@ -152,6 +152,7 @@ public class OperatoreClient {
         operatoreDaConsiderare.preleva(Integer.parseInt(tokens[2]));
       }
     }
+  }
     for (Operatore o : operatori) {
       System.out.println(o.nome()+", "+o.budget()+", "+ o.valoreAzioni() );
       Iterator<Azione> azioniOperatore = o.elencoAzioni();

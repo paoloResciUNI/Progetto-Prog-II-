@@ -21,6 +21,10 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
+import java.util.*;
+
+import borsanova.*;
+import borsanova.PoliticaPrezzo.*;
 /** Client di test per alcune funzionalità relative alle <strong>borse</strong>. */
 public class PoliticaPrezzoSogliaClient {
 
@@ -67,5 +71,62 @@ public class PoliticaPrezzoSogliaClient {
    * delle azioni (in ordine alfabetico) seguite dal prezzo (separato da una
    * virgola).
    */
+   public static void main(String[] args) {
+    String nomeBorsa = args[0];
+    int soglia = Integer.parseInt(args[1]);
+    String nomeOperatore = args[2];
+    int budgetIniziale = Integer.parseInt(args[3]);
+    Borsa borsa  = Borsa.of(nomeBorsa);
+    borsa.politicaPrezzo(new Soglia(soglia));
+    Operatore operatore = Operatore.of(nomeOperatore);
+    operatore.deposita(budgetIniziale);
+    try (Scanner scanner = new Scanner(System.in)) {
+      while (scanner.hasNext()) {
+        String stringaIn = scanner.nextLine();
+        if (stringaIn.equals("--")) {
+          break;
+        }
+        String[] dati = stringaIn.split(" ");
+        String nomeAzienda = dati[0];
+        int numero = Integer.parseInt(dati[1]);
+        int prezzoUnitario = Integer.parseInt(dati[2]);
+        Azienda azienda = Azienda.of(nomeAzienda);
+        azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
+      }
+      while (scanner.hasNext()) {
+        String stringaIn = scanner.nextLine();
+        String[] dati = stringaIn.split(" ");
+        String operazione = dati[0];
+        String nomeAzienda = dati[1];
+        Azienda azienda = null;
+          if (operazione.equals("b")) {
+            int prezzoTotale = Integer.parseInt(dati[2]);
+            Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+            while (azioni.hasNext()) {
+              Borsa.Azione a = azioni.next();
+              if (a.azienda().nome().equals(nomeAzienda))
+                azienda = a.azienda();
+              }
+            if (azienda != null) 
+              operatore.investi(borsa, azienda, prezzoTotale);
+          } else if (operazione.equals("s")) {
+            int numeroAzioni = Integer.parseInt(dati[2]);
+            Iterator<Borsa.Azione> azioniBorsa = borsa.aziendeQuotate();
+            while (azioniBorsa.hasNext()) {
+              Borsa.Azione a = azioniBorsa.next();
+              if (a.azienda().nome().equals(nomeAzienda) && operatore.possiedeAzione(a)) {
+                operatore.vendi(borsa, a, numeroAzioni);
+              }
+            }
+        }
+      }
+    }
+    // Stampa delle azioni
+    Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+    while (azioni.hasNext()) {
+      Borsa.Azione azione = azioni.next();
+      System.out.println(azione.azienda().nome() + ", " + azione.valore());
+    }
 
+   }
 }

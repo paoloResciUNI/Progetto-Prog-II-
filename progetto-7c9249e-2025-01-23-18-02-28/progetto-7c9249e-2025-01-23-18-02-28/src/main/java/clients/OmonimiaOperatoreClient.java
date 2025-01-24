@@ -39,7 +39,7 @@ public class OmonimiaOperatoreClient {
    */
   public static void main(String[] args) {
     SortedSet<Operatore>  operatori = new TreeSet<>();
-    Scanner scanner = new Scanner(System.in);
+   try (Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
       Operatore operatore = null;
       String stringaIn = scanner.nextLine();
@@ -54,6 +54,7 @@ public class OmonimiaOperatoreClient {
         operatori.add(operatore);
       }
     }
+  }
     for (Operatore operatore : operatori) {
       System.out.println(operatore.nome());
     }

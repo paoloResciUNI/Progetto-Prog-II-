@@ -67,5 +67,7 @@ public class PoliticaPrezzoVocaliClient {
    * delle azioni (in ordine alfabetico) seguite dal prezzo (separato da una
    * virgola).
    */
-
+  public static void main(String[] args) {
+    
+  }
 }
