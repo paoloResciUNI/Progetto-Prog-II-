@@ -18,6 +18,21 @@ public class Operatore implements Comparable<Operatore> {
     /**{@code azioniPossedute} una collezioni che contiene tutte le azioni possedute da questo operatore*/
     private TreeMap<Azione, Integer> azioniPossedute;
     
+
+    /**
+     * AF: 
+     *    nome -> nome dell'operatore
+     *    budget -> budget dell'operatore
+     *    azioniPossedute -> collezione di azioni possedute dall'operatore
+     * RI:
+     *    nome != null && nome != ""
+     *    budget >= 0
+     *    azioniPossedute != null
+     *    azioniPossedute.values() >= 0
+     *    azioniPossedute.keySet() != null
+     */
+
+
     /**
      * Fabbricatore dell'operatore
      * @param name il nome da dare all'operatore.
@@ -80,7 +95,7 @@ public class Operatore implements Comparable<Operatore> {
      */
     public boolean possiedeAzione(Azione azione) {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
-      return azioniPossedute.containsKey(azione);
+      return azioniPossedute.containsKey(azione) && azioniPossedute.get(azione) > 0;
     }
 
     /**
@@ -96,19 +111,21 @@ public class Operatore implements Comparable<Operatore> {
       Objects.requireNonNull(nomeBorsa, "La borsa non può essere null.");
       Objects.requireNonNull(nomeAzione, "L'azienda non può essere null.");  
       Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
+      if (investimento <= 0) throw new IllegalArgumentException("L'investimento non può avere valore nullo o negativo.");
       if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
       Integer azioniComprate = investimento / azione.valore();
       preleva(azioniComprate * azione.valore());
-      if (!possiedeAzione(azione)) {
+      if (!(possiedeAzione(azione))) {
         azioniPossedute.put(azione, azioniComprate);
         nomeBorsa.aggiungiOperatore(this);
       } else {
-        Integer nuovaQuatita = mostraAzioniPossedute(nomeAzione);
-        nuovaQuatita += azioniComprate;
-        azioniPossedute.put(azione, nuovaQuatita);
+        Integer nuovaQuantita = mostraAzioniPossedute(nomeAzione);
+        nuovaQuantita += azioniComprate;
+        azioniPossedute.put(azione, nuovaQuantita);
       }
+      if (nomeBorsa.mostraPoliticaPrezzo() != null) nomeBorsa.appilicaPoliticaAcquisto(azione, azioniComprate);
     }
 
     /**
@@ -118,11 +135,13 @@ public class Operatore implements Comparable<Operatore> {
      * @throws IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
      * @throws NullPointerException se l'azione è null.
      */
-    public void vendi(Azione azione, int quantità) {
+    public void vendi(Borsa borsa, Azione azione, int quantità) {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
-      if (azioniPossedute.get(azione) < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
-      azioniPossedute.put(azione, azioniPossedute.get(azione) - quantità);
+      int azioniAttualmentePossedute = mostraAzioniPossedute(azione.azienda());
+      if (possiedeAzione(azione) && azioniAttualmentePossedute < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
+      azioniPossedute.put(azione, azioniAttualmentePossedute - quantità);
       budget += azione.valore() * quantità;
+      if (borsa.mostraPoliticaPrezzo() != null) borsa.appilicaPoliticaVendita(azione, quantità);
     }
 
     /**

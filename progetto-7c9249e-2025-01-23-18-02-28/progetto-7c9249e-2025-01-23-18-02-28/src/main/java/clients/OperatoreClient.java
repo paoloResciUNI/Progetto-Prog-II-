@@ -145,7 +145,7 @@ public class OperatoreClient {
       } else if (tokens[1].equals("s")) {
         Borsa.Azione azioneDaVendere = null;
         azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
-        operatoreDaConsiderare.vendi(azioneDaVendere, Integer.parseInt(tokens[4]));
+        operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
       } else if (tokens[1].equals("d")) {
         operatoreDaConsiderare.deposita(Integer.parseInt(tokens[2]));
       } else if (tokens[1].equals("w")) {

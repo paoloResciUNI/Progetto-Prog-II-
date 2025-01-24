@@ -2,6 +2,8 @@ package borsanova;
 
 import java.util.*;
 
+import borsanova.PoliticaPrezzo.PoliticaPrezzo;
+
 /**
  * La borsa tiene traccia di tutte le aziende quotate e delle loro azioni. Tiene anche traccia di tutti gli operatori che 
  * operano con questa borsa. Usa anche una politica di prezzo per operare direttamente sul valore delle singole azioni. 
@@ -15,6 +17,8 @@ public class Borsa implements Comparable<Borsa> {
     private final SortedSet<Azione> aziendeQuotate;
     /**{@code operatoriBorsa} Collezione che tiene traccia di tutti gli operatori. */
     private final SortedSet<Operatore> operatoriBorsa;
+    /**{@code politicaPrezzo} è la politica di prezzo che gestisce la variazione del valore delle azioni. */
+    private PoliticaPrezzo politicaPrezzo;
       
     /**
      * AF:
@@ -58,6 +62,42 @@ public class Borsa implements Comparable<Borsa> {
      */
     public Iterator<Azione> aziendeQuotate() {
         return Collections.unmodifiableCollection(aziendeQuotate).iterator();
+    }
+
+    /**
+     * Cambia la politica prezzo della borsa.
+     * @param politicaPrezzo la nuova politica prezzo della borsa.
+     * @throws NullPointerException se la politica prezzo è {@code null}. 
+     */
+    public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) {
+        Objects.requireNonNull(politicaPrezzo);
+        this.politicaPrezzo = politicaPrezzo;
+    }
+
+    public PoliticaPrezzo mostraPoliticaPrezzo() {
+        return politicaPrezzo;
+    }
+
+    /**
+     * Applica la politica di vendita all'azione.
+     * @param azione l'azione a cui applicare la politica di vendita.
+     * @param numeroAzioni il numero di azioni da vendere.
+     * @throws NullPointerException se l'azione è {@code null}.
+     */
+    public void appilicaPoliticaVendita(Azione azione, int numeroAzioni) {
+        Objects.requireNonNull(azione);
+        politicaPrezzo.vendita(azione, numeroAzioni);        
+    }
+
+    /**
+     * Applica la politica di acquisto all'azione.
+     * @param azione l'azione a cui applicare la politica di acquisto.
+     * @param numeroAzioni il numero di azioni da acquistare.
+     * @throws NullPointerException se l'azione è {@code null}.
+     */
+    public void appilicaPoliticaAcquisto(Azione azione, int numeroAzioni) {
+        Objects.requireNonNull(azione);
+        politicaPrezzo.acquisto(azione, numeroAzioni);
     }
 
     /**
@@ -207,6 +247,14 @@ public class Borsa implements Comparable<Borsa> {
          */
         public int valore() {
             return valore;
+        }
+
+        /**
+         * Modifica il valore dell'azione. 
+         * @param newValue il nuovo valore dell'azione.
+         */
+        public void newValue(int newValue) {
+            valore = newValue;
         }
 
         /**

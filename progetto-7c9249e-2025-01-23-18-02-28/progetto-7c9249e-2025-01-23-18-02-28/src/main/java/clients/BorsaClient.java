@@ -137,7 +137,7 @@ public class BorsaClient {
       } else if (tokens[1].equals("s")) {
         Borsa.Azione azioneDaVendere = null;
         azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
-        operatoreDaConsiderare.vendi(azioneDaVendere, Integer.parseInt(tokens[4]));
+        operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
       }
     }
     for (Borsa borsa : borse) {
