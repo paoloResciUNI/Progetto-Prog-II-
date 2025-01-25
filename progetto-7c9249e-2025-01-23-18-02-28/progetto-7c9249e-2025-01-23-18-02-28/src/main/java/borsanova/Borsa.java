@@ -208,9 +208,9 @@ public class Borsa implements Comparable<Borsa> {
          *    L'azione ha un valore per singola azione.
          *    L'azione ha una quantità di azioni disponibili. 
          * RI: 
-         *    L'azienda a cui è associata l'azione non può essere vuota o null.
-         *    Il valore per singola azione deve essere > 0.
-         *    L'azienda deve avere un numero di azioni disponibili > 0.
+         *    azienda non può essere {@code null}.
+         *    valore > 0.
+         *    quantità >= 0.
          */
 
         /**

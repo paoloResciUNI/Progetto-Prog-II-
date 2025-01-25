@@ -12,6 +12,11 @@ public class IncrementoCostante implements PoliticaPrezzo {
     private int incremento;
 
     /**
+     * AF = incremento costante del valore delle azioni. 
+     * IR = incremento >= 0
+     */
+
+    /**
      * Definizione dell'incremento costante.
      * @param incremento incremento da applicare al valore dell'azione
      */

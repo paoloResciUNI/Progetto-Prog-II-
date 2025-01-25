@@ -12,6 +12,11 @@ public class VariazioneCostante implements PoliticaPrezzo {
     private int variazione;
 
     /**
+     * AF = variazione costante del valore delle azioni.
+     * IR = variazione >= 0
+     */
+
+    /**
      * Definizione della variazione costante.
      * @param variazione variazione da applicare al valore dell'azione
      */

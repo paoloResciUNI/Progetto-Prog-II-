@@ -13,7 +13,10 @@ public class Soglia implements PoliticaPrezzo {
     /**{@code soglia} è il valore della soglia che se superata, in caso di acquisto o vendita, applica il cambiamento del valore delle azioni*/
     private int soglia;
 
-    
+    /**
+     * AF = soglia dal quale si applica il cambio del valore delle azioni
+     * IR = soglia >= 0
+     */
 
     /**
      * Definizione della soglia.

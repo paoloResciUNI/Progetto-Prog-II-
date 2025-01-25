@@ -18,6 +18,14 @@ public class Vocali implements PoliticaPrezzo {
     private static final Set<Character> Vocali = new HashSet<>(Arrays.asList('A', 'E', 'I', 'O', 'U'));
 
     /**
+     * AF = lettera include l'azione nella politica di prezzo della borsa. 
+     *      vocali = {a, e, i, o, u} && Vocali = {A, E, I, O, U} anche gli elementi di vocali e Vocali sono deterministici per l'inclusione dell'azione nella politica di prezzo della borsa.  
+     * IR = lettera è un carattere
+     *      lettera != null
+     *      lettera deve essere un carattere alfabetico dell'alfabeto inglese.
+     */
+
+    /**
      * Definizione della politica di prezzo.
      * @param lettera carattere che determina quali azioni saranno coinvolte nella politica di prezzo della borsa
      */

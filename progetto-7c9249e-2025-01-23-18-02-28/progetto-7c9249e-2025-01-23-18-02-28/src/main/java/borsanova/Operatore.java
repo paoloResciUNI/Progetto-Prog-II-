@@ -21,9 +21,9 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * AF: 
-     *    nome -> nome dell'operatore
-     *    budget -> budget dell'operatore
-     *    azioniPossedute -> collezione di azioni possedute dall'operatore
+     *    nome -> nome dell'operatore. 
+     *    budget -> budget dell'operatore. Il budget dell'operatore non può essere negativo.
+     *    azioniPossedute -> collezione di azioni possedute dall'operatore, correlate con la relativa quantità di azioni possedute per ciascuna azione. 
      * RI:
      *    nome != null && nome != ""
      *    budget >= 0

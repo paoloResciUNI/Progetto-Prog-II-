@@ -17,6 +17,7 @@ public class Azienda implements Comparable<Azienda> {
      * AF:
      *      nomeAzienda: è il nome che identifica l'azienda. 
      *      borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
+     *      Nomi_Usati_Aziende: è l'insieme contenente tutti i nomi usati per definire le aziende. 
      * RI:
      *      nomeAzienda != null && nomeAzienda != "".
      *      Azione.valore > 0 && Azione.quantità >= 0
