@@ -41,20 +41,13 @@ public class OmonimiaBorsaClient {
     SortedSet<Borsa> borse = new TreeSet<>();
     try(Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
-      Borsa borsa = null;
-      String stringaIn = scanner.nextLine();
-      for (Borsa b : borse) {
-        if (b.nome().equals(stringaIn)) {
-          borsa = b;
-          break;
-        }
-      }
-      if (borsa == null) {
-        borsa = Borsa.of(stringaIn);
+        String stringaIn = scanner.nextLine();
+        try {
+        Borsa borsa = Borsa.of(stringaIn);
         borse.add(borsa);
+        } catch (Exception e) {}
       }
     }
-  }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
     }

@@ -41,20 +41,14 @@ public class OmonimiaOperatoreClient {
     SortedSet<Operatore>  operatori = new TreeSet<>();
    try (Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
-      Operatore operatore = null;
       String stringaIn = scanner.nextLine();
-      for (Operatore o : operatori) {
-        if (o.nome().equals(stringaIn)) {
-          operatore = o;
-          break;
-        }
-      }
-      if (operatore == null) {
-        operatore = Operatore.of(stringaIn);
+      try {
+      Operatore  operatore = Operatore.of(stringaIn);
         operatori.add(operatore);
+      } catch (IllegalArgumentException e) {}
       }
+
     }
-  }
     for (Operatore operatore : operatori) {
       System.out.println(operatore.nome());
     }

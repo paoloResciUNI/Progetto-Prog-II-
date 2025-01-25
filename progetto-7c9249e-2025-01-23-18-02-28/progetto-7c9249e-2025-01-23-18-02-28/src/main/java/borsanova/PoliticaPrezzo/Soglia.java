@@ -3,14 +3,20 @@ package borsanova.PoliticaPrezzo;
 // import java.util.*;
 import borsanova.Borsa.*;
 
+/**
+ * Questa classe implementa l'interfaccia {@link PoliticaPrezzo} e definisce la politica del prezzo che gestisce la variazione del valore di un'azione
+ * in caso di acquisto della stessa.
+ * Questa classe rappresenta la politica del prezzo che prevede un raddoppiamento del valore di un'ìazione in caso ne sia acquisata una quantità maggiore alla soglia e ne dimezza
+ * il valore in caso ne sia venduta una quantità maggiore alla soglia.
+ */
 public class Soglia implements PoliticaPrezzo {
+    /**{@code soglia} è il valore della soglia che se superata, in caso di acquisto o vendita, applica il cambiamento del valore delle azioni*/
     private int soglia;
 
     
 
     /**
      * Definizione della soglia.
-     * @param variazione variazione da applicare al valore dell'azione
      * @param soglia soglia da applicare al valore dell'azione
      */
     public Soglia(int soglia) {

@@ -39,22 +39,15 @@ public class OmonimiaAziendaClient {
    */
   public static void main(String[] args) {
     SortedSet<Azienda> aziende = new TreeSet<>();
-   try ( Scanner scanner = new Scanner(System.in)) {
+   try (Scanner scanner = new Scanner(System.in)) {
     while (scanner.hasNext()) {
-      Azienda azienda = null;
+      try {
       String stringaIn = scanner.nextLine();
-      for (Azienda  a : aziende) {
-        if (a.nome().equals(stringaIn)) {
-          azienda = a;
-          break;
-        }
-      }
-      if (azienda == null) {
-        azienda = Azienda.of(stringaIn);
+        Azienda azienda = Azienda.of(stringaIn);
         aziende.add(azienda);
+      } catch (Exception e) {}
       }
-    }
-  }
+    } catch (Exception e) {}
     for (Azienda azienda : aziende) {
       System.out.println(azienda.nome());
     }

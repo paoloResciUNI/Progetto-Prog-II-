@@ -64,6 +64,9 @@ public class AzioneClient {
         Azienda azienda = Azienda.of(nomeAzienda);
         azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
       }
+    } catch (Exception e) {
+      System.err.println("Errore: " + e.getMessage());
+      System.exit(1);
     }
     Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
     while (azioni.hasNext()) {

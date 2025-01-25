@@ -74,6 +74,10 @@ public class Borsa implements Comparable<Borsa> {
         this.politicaPrezzo = politicaPrezzo;
     }
 
+    /**
+     * Mostra la politica di prezzo della borsa.
+     * @return la politica di prezzo della borsa.
+     */
     public PoliticaPrezzo mostraPoliticaPrezzo() {
         return politicaPrezzo;
     }

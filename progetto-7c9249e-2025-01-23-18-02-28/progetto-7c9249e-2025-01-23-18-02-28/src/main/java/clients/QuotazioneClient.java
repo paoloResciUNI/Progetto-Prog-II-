@@ -59,23 +59,25 @@ public class QuotazioneClient {
         int prezzo = Integer.parseInt(dati[3]);
         Azienda azienda = null;
         Borsa borsa = null;
-        for (Azienda a : aziende) {
-          if (a.nome().equals(nomeAzienda)) {
-            azienda = a;
-            break;
-          }
-        }
-        if (azienda == null) {
+        try {  
           azienda = Azienda.of(nomeAzienda);
+        } catch (IllegalArgumentException e) {
+          for (Azienda a : aziende) {
+            if (a.nome().equals(nomeAzienda)) {
+              azienda = a;
+              break;
+            }
+          }            
         }
-        for (Borsa b : borse) {
-          if (b.nome().equals(nomeBorsa)) {
-            borsa = b;
-            break;
-          }
-        }
-        if (borsa == null) {
+        try {
           borsa = Borsa.of(nomeBorsa);
+        } catch (IllegalArgumentException e) {
+          for (Borsa b : borse) {
+            if (b.nome().equals(nomeBorsa)) {
+              borsa = b;
+              break;
+            }
+          }
         }
         azienda.quotazioneInBorsa(borsa, quantita, prezzo);
         aziende.add(azienda);

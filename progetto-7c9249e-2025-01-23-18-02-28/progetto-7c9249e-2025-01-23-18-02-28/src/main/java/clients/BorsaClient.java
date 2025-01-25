@@ -140,6 +140,9 @@ public class BorsaClient {
         operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
       }
     }
+  } catch (Exception e) {
+    System.err.println("Errore: " + e.getMessage());
+    System.exit(1);
   }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());

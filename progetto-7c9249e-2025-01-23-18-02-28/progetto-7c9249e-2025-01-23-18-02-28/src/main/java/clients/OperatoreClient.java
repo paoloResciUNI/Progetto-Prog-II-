@@ -23,15 +23,18 @@ package clients;
 
 import java.util.*;
 
-
 import borsanova.*;
 import borsanova.Borsa.Azione;
 
-/** Client di test per alcune funzionalità relative agli <strong>operatori</strong>. */
+/**
+ * Client di test per alcune funzionalità relative agli
+ * <strong>operatori</strong>.
+ */
 public class OperatoreClient {
 
   /** . */
-  private OperatoreClient() {}
+  private OperatoreClient() {
+  }
 
   /*-
    * Scriva un [@code main} che legge dal flusso in ingresso una sequenza di tre
@@ -90,23 +93,25 @@ public class OperatoreClient {
       String[] tokens = line.split(" ");
       Borsa borsa = null;
       Azienda azienda = null;
-      for (Borsa b : borse) {
-        if (b.nome().equals(tokens[1])) {
-          borsa = b;
-        }
-      }
-      if (borsa == null) {
+      try {
         borsa = Borsa.of(tokens[1]);
         borse.add(borsa);
-      }
-      for (Azienda a : aziende) {
-        if (a.nome().equals(tokens[0])) {
-          azienda = a;
+      } catch (IllegalArgumentException e) {
+        for (Borsa b : borse) {
+          if (b.nome().equals(tokens[1])) {
+            borsa = b;
+          }
         }
       }
-      if (azienda == null) {
+      try {
         azienda = Azienda.of(tokens[0]);
         aziende.add(azienda);
+      } catch (IllegalArgumentException e) {
+        for (Azienda a : aziende) {
+          if (a.nome().equals(tokens[0])) {
+            azienda = a;
+          }
+        }
       }
       azienda.quotazioneInBorsa(borsa, Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
     }

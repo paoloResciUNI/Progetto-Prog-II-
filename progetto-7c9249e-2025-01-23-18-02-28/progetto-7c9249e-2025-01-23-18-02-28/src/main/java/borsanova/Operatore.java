@@ -131,6 +131,7 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Un'operatore decide di vendere una o più azioni nella borsa.
      * @param azione l'azione che l'operatore vuole vendere.
+     * @param borsa la borsa in cui l'operatore vende le azioni.
      * @param quantità la quantità di azioni che l'operatore vuole vendere.
      * @throws IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
      * @throws NullPointerException se l'azione è null.
