@@ -12,15 +12,19 @@ public class VariazioneCostante implements PoliticaPrezzo {
     private int variazione;
 
     /**
-     * AF = variazione costante del valore delle azioni.
-     * IR = variazione >= 0
+     * AF:
+     *     variazione costante del valore delle azioni.
+     * IR:
+     *     variazione >= 0
      */
 
     /**
      * Definizione della variazione costante.
      * @param variazione variazione da applicare al valore dell'azione
+     * @throws IllegalArgumentException se {@code variazione} è minore di 0.
      */
     public VariazioneCostante(int variazione) {
+        if (variazione < 0) throw new IllegalArgumentException("La variazione deve essere maggiore o uguale a 0.");
         this.variazione = variazione;
     }
 

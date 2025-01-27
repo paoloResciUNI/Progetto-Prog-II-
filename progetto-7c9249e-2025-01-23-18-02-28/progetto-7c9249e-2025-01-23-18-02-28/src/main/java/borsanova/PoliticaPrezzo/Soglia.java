@@ -14,8 +14,10 @@ public class Soglia implements PoliticaPrezzo {
     private int soglia;
 
     /**
-     * AF = soglia dal quale si applica il cambio del valore delle azioni
-     * IR = soglia >= 0
+     * AF:
+     *     soglia dal quale si applica il cambio del valore.
+     * IR:
+     *     soglia >= 0
      */
 
     /**

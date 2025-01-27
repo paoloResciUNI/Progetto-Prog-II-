@@ -22,12 +22,16 @@ public class Borsa implements Comparable<Borsa> {
       
     /**
      * AF:
+     *    Nomi_Usati_Borse è l'insieme di tutti i nomi usati per nominare le borse.
      *    La borsa ha un nome.
      *    La borsa tiene traccia di tutte le aziende quotate.
      *    La borsa tiene traccia di tutti gli operatori che operano con questa borsa.
+     *    La politica prezzo è la politica che gestisce la variazione del valore delle azioni.
      * RI:
      *    Il nome della borsa non può essere vuoto o null.
-     *    Il nome della borsa non può essere già stato usato.
+     *    aziendeQuotate non può avre due aziende con lo stesso nome.
+     *    operatoriBorsa non può avere due operatori con lo stesso nome.
+     *    
      */
 
     /**
@@ -204,11 +208,11 @@ public class Borsa implements Comparable<Borsa> {
 
         /**
          * AF:
-         *    L'azione è associata ad una singola azienda.
-         *    L'azione ha un valore per singola azione.
-         *    L'azione ha una quantità di azioni disponibili. 
+         *    L'azione è associata ad una azienda.
+         *    L'azione ha una quantità di azioni disponibili.
+         *    L'azione può cambiare il suo valore in base ala politica di prezzo. 
          * RI: 
-         *    azienda non può essere {@code null}.
+         *    azienda non può essere {@code null}, stringa vuota o contenere solo spazi.
          *    valore > 0.
          *    quantità >= 0.
          */

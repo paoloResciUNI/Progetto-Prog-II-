@@ -21,15 +21,15 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * AF: 
-     *    nome -> nome dell'operatore. 
-     *    budget -> budget dell'operatore. Il budget dell'operatore non può essere negativo.
-     *    azioniPossedute -> collezione di azioni possedute dall'operatore, correlate con la relativa quantità di azioni possedute per ciascuna azione. 
+     *    Nomi_Usati_Operatore: è l'insieme contenente tutti i nomi usati per definire gli operatori.
+     *    Ogni peratore è identificato da un nome. 
+     *    Ogni operatore ha un budget.
+     *    Ogni operatore ha una collezione di azioni possedute. Ogni azione posseduta è associata ad un intero che rappresenta la quantità di azioni possedute. 
      * RI:
      *    nome != null && nome != ""
      *    budget >= 0
-     *    azioniPossedute != null
-     *    azioniPossedute.values() >= 0
-     *    azioniPossedute.keySet() != null
+     *    azioniPossedute.values() >= 0. Per ogni azione all'interno di azioniPossedute.
+     *    azioniPossedute.keySet() != null. Per ogni azione all'interno di azioniPossedute.
      */
 
 

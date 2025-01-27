@@ -12,15 +12,19 @@ public class IncrementoCostante implements PoliticaPrezzo {
     private int incremento;
 
     /**
-     * AF = incremento costante del valore delle azioni. 
-     * IR = incremento >= 0
+     * AF:
+     *     incremento costante del valore. 
+     * IR:
+     *     incremento >= 0
      */
 
     /**
      * Definizione dell'incremento costante.
      * @param incremento incremento da applicare al valore dell'azione
+     * @throws IllegalArgumentException se {@code incremento} è minore o uguale a 0.
      */
     public IncrementoCostante(int incremento) {
+        if (incremento <= 0) throw new IllegalArgumentException("L'incremento deve essere maggiore o uguale a 0.");
         this.incremento = Math.abs(incremento);
     }
 

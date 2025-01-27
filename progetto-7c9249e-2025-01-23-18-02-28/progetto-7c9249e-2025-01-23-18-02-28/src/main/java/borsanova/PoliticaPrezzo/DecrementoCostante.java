@@ -12,8 +12,10 @@ public class DecrementoCostante implements PoliticaPrezzo {
     private int decremento;
 
     /**
-     * AF = decremento costante di valore c
-     * IR = decremento >= 0
+     * AF:
+     *    decremento costante del valore. 
+     * IR:
+     *    decremento >= 0.
      */
 
 
