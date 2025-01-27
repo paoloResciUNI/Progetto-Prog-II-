@@ -21,7 +21,6 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * AF: 
-     *    Nomi_Usati_Operatore: è l'insieme contenente tutti i nomi usati per definire gli operatori.
      *    Ogni peratore è identificato da un nome. 
      *    Ogni operatore ha un budget.
      *    Ogni operatore ha una collezione di azioni possedute. Ogni azione posseduta è associata ad un intero che rappresenta la quantità di azioni possedute. 

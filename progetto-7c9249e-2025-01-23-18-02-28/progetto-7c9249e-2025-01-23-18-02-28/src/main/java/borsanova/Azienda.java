@@ -17,7 +17,6 @@ public class Azienda implements Comparable<Azienda> {
      * AF:
      *      nomeAzienda: è il nome che identifica l'azienda.
      *      borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
-     *      Nomi_Usati_Aziende: è l'insieme contenente tutti i nomi usati per definire le aziende. 
      * RI:
      *      nomeAzienda != null && nomeAzienda != "".
      *      borseQuotate non contiene duplicati.
@@ -48,8 +47,7 @@ public class Azienda implements Comparable<Azienda> {
     private Azienda(String nome) throws IllegalArgumentException {
         if (nome == null)
             throw new IllegalArgumentException("L'azienda deve avere un nome.");
-        if (nome == "")
-            throw new IllegalArgumentException("Il nome dell'azienda non può essere vuoto.");
+        if (nome.equals("")) throw new IllegalArgumentException("Il nome dell'azienda non può essere vuoto.");
         this.nome = nome;
         borseQuotate = new TreeSet<>();
     }

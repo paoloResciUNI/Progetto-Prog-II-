@@ -5,6 +5,10 @@ import java.util.*;
 import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
 /**
+ * Per lo svolgimento del progetto mi sono confrontato con i miei compagni di corso: Fernando Gavezzotti e Matteo Mascherpa. 
+ */
+
+/**
  * La borsa tiene traccia di tutte le aziende quotate e delle loro azioni. Tiene anche traccia di tutti gli operatori che 
  * operano con questa borsa. Usa anche una politica di prezzo per operare direttamente sul valore delle singole azioni. 
  */
@@ -22,8 +26,6 @@ public class Borsa implements Comparable<Borsa> {
       
     /**
      * AF:
-     *    Nomi_Usati_Borse è l'insieme di tutti i nomi usati per nominare le borse.
-     *    La borsa ha un nome.
      *    La borsa tiene traccia di tutte le aziende quotate.
      *    La borsa tiene traccia di tutti gli operatori che operano con questa borsa.
      *    La politica prezzo è la politica che gestisce la variazione del valore delle azioni.
