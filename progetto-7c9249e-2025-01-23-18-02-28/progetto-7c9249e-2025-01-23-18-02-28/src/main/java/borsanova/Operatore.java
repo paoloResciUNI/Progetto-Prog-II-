@@ -10,7 +10,7 @@ import borsanova.Borsa.Azione;
 public class Operatore implements Comparable<Operatore> {
 
     /**{@code Nomi_Usati_Operatore} tiene traccia di tutti i nomi usati per definire gli operatori.*/ 
-     private static final SortedSet<String> Nomi_Usati_Operatore = new TreeSet<>();
+     private static final SortedSet<String> nomiUsatiOperatore = new TreeSet<>();
     /**{@code nome} è il nome dell'operatore. */
      private final String nome; 
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
@@ -41,8 +41,8 @@ public class Operatore implements Comparable<Operatore> {
     public static Operatore of(final String name) {
       if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
         throw new IllegalArgumentException("Name must not be empty.");
-      if (Nomi_Usati_Operatore.contains(name)) throw new IllegalArgumentException("Name already used.");
-      Nomi_Usati_Operatore.add(name);
+      if (nomiUsatiOperatore.contains(name)) throw new IllegalArgumentException("Name already used.");
+      nomiUsatiOperatore.add(name);
       return new Operatore(name);
     }
 
@@ -50,7 +50,7 @@ public class Operatore implements Comparable<Operatore> {
      * Viene dato un nome all'operatore, che non sia ancora stato usato, e gli si da un budget di partenza pari a 0. 
      * @param nomeOperatore nome del nuovo operatore.
      */
-    public Operatore(String nomeOperatore) {
+    private Operatore(String nomeOperatore) {
         nome = nomeOperatore;
         budget = 0; 
         azioniPossedute = new TreeMap<Azione, Integer>();
@@ -79,7 +79,7 @@ public class Operatore implements Comparable<Operatore> {
      * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
      * @throws NullPointerException se l'azienda è null.
      */
-    public Integer mostraAzioniPossedute(Azienda nomeAzienda) {
+    public Integer mostraQuantitaAzione(Azienda nomeAzienda) throws NoSuchElementException, NullPointerException {
       Objects.requireNonNull(nomeAzienda, "L'azienda non può essere null.");
       for (Azione a : azioniPossedute.keySet()) {
         if(a.azienda().nome().equals(nomeAzienda.nome())) return azioniPossedute.get(a);
@@ -98,7 +98,8 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Un'operatore decide di acquistare una o più azioni. 
+     * Un'operatore decide di acquistare una o più azioni. L'investimento deve essere maggiore di 0.
+     * L'investimento dell'operatore non può superare il suo budget e il budget deve essere maggiore del valore della singola azione.   
      * @param nomeBorsa è la borsa dal quale l'operatore vuole comprare le azioni dell'azienda che gli interessa.
      * @param nomeAzione è il nome dell'azienda di cui l'operatore vuole acquistare le azioni. 
      * @param investimento l'investimento. 
@@ -110,7 +111,6 @@ public class Operatore implements Comparable<Operatore> {
       Objects.requireNonNull(nomeBorsa, "La borsa non può essere null.");
       Objects.requireNonNull(nomeAzione, "L'azienda non può essere null.");  
       Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
-      if (investimento <= 0) throw new IllegalArgumentException("L'investimento non può avere valore nullo o negativo.");
       if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
@@ -120,11 +120,11 @@ public class Operatore implements Comparable<Operatore> {
         azioniPossedute.put(azione, azioniComprate);
         nomeBorsa.aggiungiOperatore(this);
       } else {
-        Integer nuovaQuantita = mostraAzioniPossedute(nomeAzione);
+        Integer nuovaQuantita = mostraQuantitaAzione(nomeAzione);
         nuovaQuantita += azioniComprate;
         azioniPossedute.put(azione, nuovaQuantita);
       }
-      if (nomeBorsa.mostraPoliticaPrezzo() != null) nomeBorsa.appilicaPoliticaAcquisto(azione, azioniComprate);
+      if (nomeBorsa.mostraPoliticaPrezzo() != null) nomeBorsa.appilicaPoliticaAcquisto(azione, investimento); 
     }
 
     /**
@@ -137,7 +137,7 @@ public class Operatore implements Comparable<Operatore> {
      */
     public void vendi(Borsa borsa, Azione azione, int quantità) {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
-      int azioniAttualmentePossedute = mostraAzioniPossedute(azione.azienda());
+      int azioniAttualmentePossedute = mostraQuantitaAzione(azione.azienda());
       if (possiedeAzione(azione) && azioniAttualmentePossedute < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
       azioniPossedute.put(azione, azioniAttualmentePossedute - quantità);
       budget += azione.valore() * quantità;
@@ -161,7 +161,7 @@ public class Operatore implements Comparable<Operatore> {
      * @return l'iteratore alle azioni possedute da questo operatore. 
      */
     public Iterator<Azione> elencoAzioni() {
-      return azioniPossedute.keySet().iterator();
+      return Collections.unmodifiableCollection(azioniPossedute.keySet()).iterator();
     }
 
     /**
@@ -169,7 +169,7 @@ public class Operatore implements Comparable<Operatore> {
      * @param daDepositare la quantità da depositare.
      * @throws IllegalArgumentException se {@code daDepositare} è minore o uguale a 0.
      */
-    public void deposita(int daDepositare) {
+    public void deposita(int daDepositare) throws IllegalArgumentException {
       if (daDepositare <= 0) throw new IllegalArgumentException("Il deposito non può avere valore nullo o negativo.");
       budget += daDepositare;
     }
@@ -179,7 +179,7 @@ public class Operatore implements Comparable<Operatore> {
      * @param daPrelevare quantità di denaro da prelevare.
      * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare questa somma.
      */
-    public void preleva(int daPrelevare) {
+    public void preleva(int daPrelevare)throws IllegalArgumentException {
       if (daPrelevare > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");
       budget -= daPrelevare;
     }

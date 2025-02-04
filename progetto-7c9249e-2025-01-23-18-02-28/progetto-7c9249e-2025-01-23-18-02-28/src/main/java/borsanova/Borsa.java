@@ -13,8 +13,8 @@ import borsanova.PoliticaPrezzo.PoliticaPrezzo;
  * operano con questa borsa. Usa anche una politica di prezzo per operare direttamente sul valore delle singole azioni. 
  */
 public class Borsa implements Comparable<Borsa> {
-    /**{@code Nomi_Usati_Borse} è una collezione contenente tutti i nomi usati per nominare le borse. */
-    private static final SortedSet<String> Nomi_Usati_Borse = new TreeSet<>();
+    /**{@code nomiUsatiBorse} è una collezione contenente tutti i nomi usati per nominare le borse. */
+    private static final SortedSet<String> nomiUsatiBorse = new TreeSet<>();
     /**{@code nome} è il nome di questa borsa. */
     private final String nome;
     /**{@code aziendeQuotate} è una collezione contente tutte le aziende quotate in questa borsa.*/
@@ -43,12 +43,12 @@ public class Borsa implements Comparable<Borsa> {
      * @throws IllegalArgumentException se {@code name} è {@code null} oppure se il nome è già in uso.  
      * @return la nuova borsa creata. 
      */
-    public static Borsa of(final String name) {
+    public static Borsa of(final String name) throws IllegalArgumentException {
         if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
             throw new IllegalArgumentException("Name must not be empty.");
-        if (Nomi_Usati_Borse.contains(name))
+        if (nomiUsatiBorse.contains(name))
             throw new IllegalArgumentException("Name already used.");
-        Nomi_Usati_Borse.add(name);
+        nomiUsatiBorse.add(name);
         return new Borsa(name);
     }
 
@@ -75,7 +75,7 @@ public class Borsa implements Comparable<Borsa> {
      * @param politicaPrezzo la nuova politica prezzo della borsa.
      * @throws NullPointerException se la politica prezzo è {@code null}. 
      */
-    public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) {
+    public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) throws NullPointerException {
         Objects.requireNonNull(politicaPrezzo);
         this.politicaPrezzo = politicaPrezzo;
     }
@@ -94,9 +94,10 @@ public class Borsa implements Comparable<Borsa> {
      * @param numeroAzioni il numero di azioni da vendere.
      * @throws NullPointerException se l'azione è {@code null}.
      */
-    public void appilicaPoliticaVendita(Azione azione, int numeroAzioni) {
+    void appilicaPoliticaVendita(Azione azione, int numeroAzioni) throws NullPointerException {
         Objects.requireNonNull(azione);
-        politicaPrezzo.vendita(azione, numeroAzioni);        
+        var nuovoValore = politicaPrezzo.vendita(azione, numeroAzioni);
+        azione.newValue(nuovoValore);        
     }
 
     /**
@@ -105,9 +106,10 @@ public class Borsa implements Comparable<Borsa> {
      * @param numeroAzioni il numero di azioni da acquistare.
      * @throws NullPointerException se l'azione è {@code null}.
      */
-    public void appilicaPoliticaAcquisto(Azione azione, int numeroAzioni) {
+    void appilicaPoliticaAcquisto(Azione azione, int numeroAzioni) throws NullPointerException {
         Objects.requireNonNull(azione);
-        politicaPrezzo.acquisto(azione, numeroAzioni);
+        int nuovoValore = politicaPrezzo.acquisto(azione, numeroAzioni);
+        azione.newValue(nuovoValore);
     }
 
     /**
@@ -120,15 +122,29 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Aggiunge l'azione all'insieme delle aziende quotate in questa borsa 
-     * @param nomeAzienda è il nome dell'azinda che si sta quotando in borsa.
+     * @param azienda è il nome dell'azinda che si sta quotando in borsa.
      * @param valoreAzione valore per azione dell'azienda.
      * @param quantitàAzione quantità di azioni che l'azienda mette a disposizione.
      * @throws NullPointerException se il nome dell'azienda è {@code null}.
      */
-    public void aggiungiAzione(Azienda nomeAzienda, int valoreAzione, int quantitàAzione) {
-        Objects.requireNonNull(nomeAzienda);
-        Azione nuovaAzienda = new Azione(nomeAzienda, valoreAzione, quantitàAzione);
-        aziendeQuotate.add(nuovaAzienda);
+    void QuotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
+        Objects.requireNonNull(azienda);
+        Iterator<Azione> azioniBorsa = aziendeQuotate();
+        while (azioniBorsa.hasNext()) {
+            if (azioniBorsa.next().azienda.equals(azienda)) {
+                throw new IllegalArgumentException("Questa azienda è già quotata in questa borsa!");
+            }
+        }
+        if (quantitaAzione <= 0 || valoreAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
+        Iterator<Borsa> borseAzienda = azienda.borseQuotate();
+        while (borseAzienda.hasNext()) {
+            if (borseAzienda.next().equals(this)) {
+                Azione nuovaAzione = new Azione(azienda, valoreAzione, quantitaAzione);
+                aziendeQuotate.add(nuovaAzione);
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Non puoi quotare l'azienda in questa borsa.");
     }
 
     /**
@@ -152,7 +168,7 @@ public class Borsa implements Comparable<Borsa> {
      * @return il numeor di azioni disponibili ancora in questa borsa.
      * @throws NullPointerException se il nome dell'azienda è {@code null}.
      */
-    public int azioniDisponibili(Azienda nomeAzione) {
+    public int azioniDisponibili(Azienda nomeAzione) throws NullPointerException {
         Objects.requireNonNull(nomeAzione);
         int disponibili = 0; 
         int comprate = 0;
@@ -160,19 +176,21 @@ public class Borsa implements Comparable<Borsa> {
             if (nomeAzione.nome().equals(a.azienda().nome())) disponibili = a.quantita();
         }
         for (Operatore o: operatoriBorsa) {
-            comprate += o.mostraAzioniPossedute(nomeAzione);
+            comprate += o.mostraQuantitaAzione(nomeAzione);
         }
         return disponibili - comprate;
     }
-    
+
     /**
      * Aggiunge un operatore alla borsa.
      * @param nuovoOperatore il nuovo operatore da aggiungere alla borsa.
      * @throws NullPointerException se il nome dell'operatore è {@code null}.  
+     * @throws IllegalArgumentException se l'operatore da aggiungere fa già parte della borsa. 
      */
-    public void aggiungiOperatore(Operatore nuovoOperatore) {
+    void aggiungiOperatore(Operatore nuovoOperatore) throws NullPointerException, IllegalArgumentException{
         Objects.requireNonNull(nuovoOperatore);
-        operatoriBorsa.add(nuovoOperatore);
+        if (operatoriBorsa.contains(nuovoOperatore)) throw new IllegalArgumentException("L'operatore è già presente nella borsa");
+        else operatoriBorsa.add(nuovoOperatore);
     }
 
     @Override 
@@ -210,13 +228,14 @@ public class Borsa implements Comparable<Borsa> {
 
         /**
          * AF:
-         *    L'azione è associata ad una azienda.
-         *    L'azione ha una quantità di azioni disponibili.
-         *    L'azione può cambiare il suo valore in base ala politica di prezzo. 
+         *    L'azione è associata ad una azienda e qeuall'azienda da il {@code nome} all'azione.
+         *    L'azione ha una quantità di azioni disponibili. {@code quantita} rappresenta la quantità di azioni 
+         *    {@code valore} rappresenta il valore della singola Azione. 
+         *    {@code NomeBorsa} è il nome della borsa dove si trova l'azione. 
          * RI: 
          *    azienda non può essere {@code null}, stringa vuota o contenere solo spazi.
          *    valore > 0.
-         *    quantità >= 0.
+         *    quantità > 0.
          */
 
         /**
@@ -227,7 +246,7 @@ public class Borsa implements Comparable<Borsa> {
          * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono \le 0.
          * @throws NullPointerException se il nome dell'azienda è {@code null}. 
          */
-        private Azione(Azienda nome, int value, int numeroAzioni) throws IllegalArgumentException {
+        private Azione(Azienda nome, int value, int numeroAzioni) throws IllegalArgumentException, NullPointerException {
             Objects.nonNull(nome);
             if (value <= 0 || numeroAzioni <= 0) throw new IllegalArgumentException("Il valore dell'azione e la quantità di azioni deve essere > 0.");
             azienda = nome;
@@ -247,7 +266,7 @@ public class Borsa implements Comparable<Borsa> {
          * Restituisce il nome della borsa.
          * @return il nome di questa borsa.
          */
-        public String borsa() {
+        public String nomeBorsa() {
             return nome;
         }
 
@@ -263,7 +282,7 @@ public class Borsa implements Comparable<Borsa> {
          * Modifica il valore dell'azione. 
          * @param newValue il nuovo valore dell'azione.
          */
-        public void newValue(int newValue) {
+        private void newValue(int newValue) {
             valore = newValue;
         }
 
@@ -274,15 +293,15 @@ public class Borsa implements Comparable<Borsa> {
         public int quantita() {
             int azioniVendute = 0;
             for (Operatore o: operatoriBorsa) {
-                if (o.possiedeAzione(this)) azioniVendute += o.mostraAzioniPossedute(azienda);
+                if (o.possiedeAzione(this)) azioniVendute += o.mostraQuantitaAzione(azienda);
             } 
             return quantita-azioniVendute;
         }
 
         @Override
         public int compareTo(Azione o) {
-            if(this.borsa().equals(o.borsa())) return this.azienda().compareTo(o.azienda());
-            return this.borsa().compareTo(o.borsa());
+            if(this.nomeBorsa().equals(o.nomeBorsa())) return this.azienda().compareTo(o.azienda());
+            return this.nomeBorsa().compareTo(o.nomeBorsa());
         }
         }
 

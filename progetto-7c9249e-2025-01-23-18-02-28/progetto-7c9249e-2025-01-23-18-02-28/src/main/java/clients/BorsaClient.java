@@ -141,8 +141,7 @@ public class BorsaClient {
       }
     }
   } catch (Exception e) {
-    System.err.println("Errore: " + e.getMessage());
-    System.exit(1);
+    
   }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
@@ -151,8 +150,8 @@ public class BorsaClient {
         Borsa.Azione action = azioniNellaBorsa.next();
         System.out.println("- " + action.azienda().nome() + " " + action.quantita());
         for (Operatore operatore : operatori) {
-          if (operatore.possiedeAzione(action) && operatore.mostraAzioniPossedute(action.azienda()) >0) {
-            System.out.println("= " + operatore.nome() + " " + operatore.mostraAzioniPossedute(action.azienda()));
+          if (operatore.possiedeAzione(action) && operatore.mostraQuantitaAzione(action.azienda()) >0) {
+            System.out.println("= " + operatore.nome() + " " + operatore.mostraQuantitaAzione(action.azienda()));
           }
         }
       }

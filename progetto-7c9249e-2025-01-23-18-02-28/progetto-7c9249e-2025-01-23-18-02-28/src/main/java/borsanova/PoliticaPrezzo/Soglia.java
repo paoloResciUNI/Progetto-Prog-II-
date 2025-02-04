@@ -33,10 +33,11 @@ public class Soglia implements PoliticaPrezzo {
      * @param azione l'azione che si vuole vendere.
      * @param numeroAzioni il numero di azioni che si vogliono vendere.
      */
-    public void vendita(Azione azione, int numeroAzioni) {
+    public int vendita(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
-        if (numeroAzioni > soglia && valoreAttuale/2 >= 1) azione.newValue(valoreAttuale/2);
-        else if (valoreAttuale/2 < 1) azione.newValue(1);
+        if (numeroAzioni > soglia && valoreAttuale/2 >= 1) return (valoreAttuale/2);
+        else if (valoreAttuale/2 < 1) return 1;
+        else return azione.valore();
     }
     
     /**
@@ -44,8 +45,9 @@ public class Soglia implements PoliticaPrezzo {
      * @param azione l'azione che si vuole acquistare.
      * @param numeroAzioni il numero di azioni che si vogliono acquistare.
      */
-    public void acquisto(Azione azione, int numeroAzioni) {
+    public int acquisto(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
-        if (numeroAzioni > soglia) azione.newValue(valoreAttuale*2);
+        if (numeroAzioni > soglia) return (valoreAttuale*2);
+        return azione.valore();
     }
 }

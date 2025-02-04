@@ -163,8 +163,8 @@ public class OperatoreClient {
       Iterator<Azione> azioniOperatore = o.elencoAzioni();
       while (azioniOperatore.hasNext()) {
         Azione azioneOp = azioniOperatore.next();
-        int numAzione = o.mostraAzioniPossedute(azioneOp.azienda());
-        if (numAzione > 0 ) System.out.println("- "+azioneOp.borsa()+", "+azioneOp.azienda().nome()+", "+ numAzione);
+        int numAzione = o.mostraQuantitaAzione(azioneOp.azienda());
+        if (numAzione > 0 ) System.out.println("- "+azioneOp.nomeBorsa()+", "+azioneOp.azienda().nome()+", "+ numAzione);
       }
     }
   }

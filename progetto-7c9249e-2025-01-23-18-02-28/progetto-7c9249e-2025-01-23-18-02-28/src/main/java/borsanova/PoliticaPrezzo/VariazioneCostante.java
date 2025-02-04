@@ -29,14 +29,14 @@ public class VariazioneCostante implements PoliticaPrezzo {
     }
 
     @Override
-    public void vendita(Azione azione, int numeroAzioni) {
-        if (azione.valore() - variazione > 0) azione.newValue(azione.valore() - variazione);
-            else azione.newValue(1); 
+    public int vendita(Azione azione, int numeroAzioni) {
+        if (azione.valore() - variazione > 0) return (azione.valore() - variazione);
+            else return 1; 
     }
 
     @Override
-    public void acquisto(Azione azione, int numeroAzioni) {
-        azione.newValue(azione.valore() + variazione);
+    public int acquisto(Azione azione, int numeroAzioni) {
+        return (azione.valore() + variazione);
     }
     
 }

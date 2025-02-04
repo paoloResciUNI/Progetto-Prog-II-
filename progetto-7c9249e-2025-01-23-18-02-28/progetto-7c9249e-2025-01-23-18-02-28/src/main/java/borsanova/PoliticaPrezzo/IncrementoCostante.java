@@ -29,14 +29,14 @@ public class IncrementoCostante implements PoliticaPrezzo {
     }
 
     @Override
-    public void vendita(Azione azione, int numeroAzioni) {
-        return;
+    public int vendita(Azione azione, int numeroAzioni) {
+        return azione.valore();
     }
 
     @Override
-    public void acquisto(Azione azione, int numeroAzioni) {
+    public int acquisto(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
-        azione.newValue(valoreAttuale + incremento);
+        return (valoreAttuale + incremento);
     }
     
 }

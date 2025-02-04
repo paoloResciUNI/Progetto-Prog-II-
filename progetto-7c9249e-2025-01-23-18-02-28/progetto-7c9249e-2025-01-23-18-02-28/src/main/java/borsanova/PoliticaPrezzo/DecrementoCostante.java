@@ -28,15 +28,15 @@ public class DecrementoCostante implements PoliticaPrezzo {
     }
 
     @Override
-    public void vendita(Azione azione, int numeroAzioni) {
+    public int vendita(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
-        if (valoreAttuale - decremento > 0) azione.newValue(valoreAttuale - decremento);
-        else azione.newValue(1); 
+        if (valoreAttuale - decremento > 0) return (valoreAttuale - decremento);
+        else return 1; 
     }
 
     @Override
-    public void acquisto(Azione azione, int numeroAzioni) {
-        return;
+    public int acquisto(Azione azione, int numeroAzioni) {
+        return azione.valore();
     }
     
 }

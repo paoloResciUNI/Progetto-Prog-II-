@@ -15,11 +15,10 @@ public class Azienda implements Comparable<Azienda> {
 
     /**
      * AF:
-     *      nomeAzienda: è il nome che identifica l'azienda.
-     *      borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
+     *      {@code nome}: è il nome che identifica l'azienda.
+     *      {@code borseQuotate}: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
      * RI:
-     *      nomeAzienda != null && nomeAzienda != "".
-     *      borseQuotate non contiene duplicati.
+     *      nome != null && nome != "" || !nome.isBlank().
      */
 
     /**
@@ -42,30 +41,30 @@ public class Azienda implements Comparable<Azienda> {
      * Questa classe assegna un nome all'azienda.
      * 
      * @param nome è il nome che avrà l'azienda.
-     * @throws IllegalArgumentException se il nome è {@code null} o se è uguale alla stringa vuta.
      */
     private Azienda(String nome) throws IllegalArgumentException {
-        if (nome == null)
-            throw new IllegalArgumentException("L'azienda deve avere un nome.");
-        if (nome.equals("")) throw new IllegalArgumentException("Il nome dell'azienda non può essere vuoto.");
         this.nome = nome;
         borseQuotate = new TreeSet<>();
     }
 
     /**
-     * Questo metodo quota quota un'azione in borsa. 
+     * Questo metodo quota questa azienda in una borsa.
+     * L'azienda viene quotata se il numero delle azioni e il loro valore è maggiore di zero. 
+     * Un'azienda si può quotare al più una volta nella stessa borsa  
      * 
-     * @param nomeBorsa di tipo {@code Borsa}, indica la borsa nel quale l'azienda si vuole quotare.
-     * @param numeroAzioni di tipo {@code int}, il numero di azioni che l'azienda vuole vendere.
-     * @param valorePerAzione di tipo {@code int}, il valore per singola azione.
+     * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
+     * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
+     * @param valorePerAzione il valore per singola azione.
      * @throws IllegalArgumentException se {@code numeroAzioni} e {@code valorePerAzione} è minore o uguale a 0.  
-     * @throws NullPointerException se {@code nomeBorsa} è {@code null}. 
+     * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
-    public void quotazioneInBorsa(Borsa nomeBorsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException {
-        Objects.requireNonNull(nomeBorsa, "La borsa non può essere null."); 
+    public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException {
+        Objects.requireNonNull(borsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
-        nomeBorsa.aggiungiAzione(this, valorePerAzione, numeroAzioni);
-        borseQuotate.add(nomeBorsa);
+        if (!(borseQuotate.contains(borsa))) {
+            borseQuotate.add(borsa);
+            borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
+        } else return;
     }
     
     /**

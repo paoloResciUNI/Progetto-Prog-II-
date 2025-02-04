@@ -10,16 +10,18 @@ import borsanova.Borsa.Azione;
  */
 public interface PoliticaPrezzo {
     /**
-     * Sancisce il cambio di valore dell'azione alla vendita dell'azione.
+     * Sancisce il cambio di valore dell'azione alla vendita dell'azione in base a criteri specifici.
      * @param azione l'azione che si vuole vendere.
      * @param numeroAzioni il numero di azioni che si vogliono vendere.
+     * @return il nuovo valore dell'azione. 
      */
-    public void vendita(Azione azione, int numeroAzioni);
+    public int vendita(Azione azione, int numeroAzioni);
     
     /**
-     * Sancisce il cambio di valore dell'azione all'acquisto dell'azione.
+     * Sancisce il cambio di valore dell'azione all'acquisto dell'azione in base a criteri specifici.
      * @param azione l'azione che si vuole acquistare.
      * @param numeroAzioni il numero di azioni che si vogliono acquistare.
+     * @return il nuovo valore dell'azione. 
      */
-     public void acquisto(Azione azione, int numeroAzioni);   
+     public int acquisto(Azione azione, int numeroAzioni);   
 }
