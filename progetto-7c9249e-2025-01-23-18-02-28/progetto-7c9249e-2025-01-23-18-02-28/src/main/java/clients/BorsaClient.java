@@ -21,8 +21,14 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
-import borsanova.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.SortedSet;
+import java.util.TreeSet;
+
+import borsanova.Azienda;
+import borsanova.Borsa;
+import borsanova.Operatore;
 
 /**
  * Client di test per alcune funzionalità relative alle <strong>borse</strong>.
@@ -145,7 +151,7 @@ public class BorsaClient {
   }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
-      Iterator<Borsa.Azione> azioniNellaBorsa = borsa.aziendeQuotate();
+      Iterator<Borsa.Azione> azioniNellaBorsa = borsa.azioniQuotate();
       while (azioniNellaBorsa.hasNext()) {
         Borsa.Azione action = azioniNellaBorsa.next();
         System.out.println("- " + action.azienda().nome() + " " + action.quantita());

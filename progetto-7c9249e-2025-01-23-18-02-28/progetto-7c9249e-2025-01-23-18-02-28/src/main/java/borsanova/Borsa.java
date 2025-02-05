@@ -1,38 +1,44 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
-/**
- * Per lo svolgimento del progetto mi sono confrontato con i miei compagni di corso: Fernando Gavezzotti e Matteo Mascherpa. 
- */
+
+  //Per lo svolgimento del progetto mi sono confrontato con i miei compagni di corso: Fernando Gavezzotti e Matteo Mascherpa. 
+ 
 
 /**
  * La borsa tiene traccia di tutte le aziende quotate e delle loro azioni. Tiene anche traccia di tutti gli operatori che 
  * operano con questa borsa. Usa anche una politica di prezzo per operare direttamente sul valore delle singole azioni. 
  */
 public class Borsa implements Comparable<Borsa> {
-    /**{@code nomiUsatiBorse} è una collezione contenente tutti i nomi usati per nominare le borse. */
-    private static final SortedSet<String> nomiUsatiBorse = new TreeSet<>();
+    /**{@code ISTANZE} è una collezione contenente tutti i nomi usati per nominare le borse. */
+    private static final SortedSet<String> ISTANZE = new TreeSet<>();
     /**{@code nome} è il nome di questa borsa. */
     private final String nome;
-    /**{@code aziendeQuotate} è una collezione contente tutte le aziende quotate in questa borsa.*/
-    private final SortedSet<Azione> aziendeQuotate;
+    /**{@code azioniQuotate} è una collezione contente tutte le azioni in questa borsa.*/
+    private final SortedSet<Azione> azioniQuotate;
     /**{@code operatoriBorsa} Collezione che tiene traccia di tutti gli operatori. */
     private final SortedSet<Operatore> operatoriBorsa;
     /**{@code politicaPrezzo} è la politica di prezzo che gestisce la variazione del valore delle azioni. */
     private PoliticaPrezzo politicaPrezzo;
       
-    /**
+    /*-
      * AF:
-     *    La borsa tiene traccia di tutte le aziende quotate.
-     *    La borsa tiene traccia di tutti gli operatori che operano con questa borsa.
-     *    La politica prezzo è la politica che gestisce la variazione del valore delle azioni.
+     *    - nome: è il nome che identifica la borsa. 
+     *    - aziendeQuotate: l'insieme di tutte le aziende quotate in questa borsa.
+     *    - operatoriBorsa: tiene traccia di tutti gli operatori che operano con questa borsa.
+     *    - politicaPrezzo: è la politica che gestisce la variazione del valore delle azioni.
      * RI:
-     *    Il nome della borsa non può essere vuoto o null.
-     *    aziendeQuotate non può avre due aziende con lo stesso nome.
-     *    operatoriBorsa non può avere due operatori con lo stesso nome.
+     *    - nome != null && !nome.isBlank().
+     *    - aziendeQuotate != null && a != null per ogni a in aziendeQuotate.
+     *    - operatoriBorsa != null && o != null per ogni o in operatoriBorsa.
      *    
      */
 
@@ -46,9 +52,9 @@ public class Borsa implements Comparable<Borsa> {
     public static Borsa of(final String name) throws IllegalArgumentException {
         if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
             throw new IllegalArgumentException("Name must not be empty.");
-        if (nomiUsatiBorse.contains(name))
+        if (ISTANZE.contains(name))
             throw new IllegalArgumentException("Name already used.");
-        nomiUsatiBorse.add(name);
+        ISTANZE.add(name);
         return new Borsa(name);
     }
 
@@ -58,8 +64,8 @@ public class Borsa implements Comparable<Borsa> {
      */
     private Borsa(String nome) {
         this.nome = nome;
-        aziendeQuotate = new TreeSet<Azione>();
-        operatoriBorsa = new TreeSet<Operatore>();
+        azioniQuotate = new TreeSet<>();
+        operatoriBorsa = new TreeSet<>();
     }
 
     /**
@@ -67,7 +73,7 @@ public class Borsa implements Comparable<Borsa> {
      * @return un iteratore per le azioni quotate in questa borsa. 
      */
     public Iterator<Azione> aziendeQuotate() {
-        return Collections.unmodifiableCollection(aziendeQuotate).iterator();
+        return Collections.unmodifiableCollection(azioniQuotate).iterator();
     }
 
     /**
@@ -129,18 +135,13 @@ public class Borsa implements Comparable<Borsa> {
      */
     void QuotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
         Objects.requireNonNull(azienda);
-        Iterator<Azione> azioniBorsa = aziendeQuotate();
-        while (azioniBorsa.hasNext()) {
-            if (azioniBorsa.next().azienda.equals(azienda)) {
-                throw new IllegalArgumentException("Questa azienda è già quotata in questa borsa!");
-            }
-        }
         if (quantitaAzione <= 0 || valoreAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
+        Azione nuovaAzione = new Azione(azienda, valoreAzione, quantitaAzione);
+        if (azioniQuotate.contains(nuovaAzione)) throw new IllegalArgumentException("Questa azienda è già quotata in questa borsa!");
         Iterator<Borsa> borseAzienda = azienda.borseQuotate();
         while (borseAzienda.hasNext()) {
             if (borseAzienda.next().equals(this)) {
-                Azione nuovaAzione = new Azione(azienda, valoreAzione, quantitaAzione);
-                aziendeQuotate.add(nuovaAzione);
+                azioniQuotate.add(nuovaAzione);
                 return;
             }
         }
@@ -156,7 +157,7 @@ public class Borsa implements Comparable<Borsa> {
      */
     public Azione cercaAzioneBorsa(Azienda nomeAzione) throws NoSuchElementException {
         Objects.requireNonNull(nomeAzione);
-        for (Azione a: aziendeQuotate) {
+        for (Azione a: azioniQuotate) {
             if (nomeAzione.nome().equals(a.azienda().nome())) return a;  
         }
         throw new NoSuchElementException("Bisogna prendere le azione di un'azienda quotata in questa borsa.");
@@ -172,7 +173,7 @@ public class Borsa implements Comparable<Borsa> {
         Objects.requireNonNull(nomeAzione);
         int disponibili = 0; 
         int comprate = 0;
-        for (Azione a: aziendeQuotate) {
+        for (Azione a: azioniQuotate) {
             if (nomeAzione.nome().equals(a.azienda().nome())) disponibili = a.quantita();
         }
         for (Operatore o: operatoriBorsa) {
@@ -212,7 +213,7 @@ public class Borsa implements Comparable<Borsa> {
 
     @Override
     public String toString() {
-        return nome+ ": " + aziendeQuotate.toString() + "\n";
+        return nome+ ": " + azioniQuotate.toString() + "\n";
     }
 
     /**
@@ -226,16 +227,17 @@ public class Borsa implements Comparable<Borsa> {
         /**{@code quantità} è la quantità di azioni totalmente disponibili. */
         private int quantita;
 
-        /**
+        /*-
          * AF:
-         *    L'azione è associata ad una azienda e qeuall'azienda da il {@code nome} all'azione.
-         *    L'azione ha una quantità di azioni disponibili. {@code quantita} rappresenta la quantità di azioni 
-         *    {@code valore} rappresenta il valore della singola Azione. 
-         *    {@code NomeBorsa} è il nome della borsa dove si trova l'azione. 
+         *    - nome: è il nome dell'azienda al quale è associata l'azione.
+         *    - quantita: rappresenta il numero di azioni presenti in questa borsa.  
+         *    - valore: rappresenta il valore della singola Azione. 
+         *    - nomeBorsa: è il nome della borsa dove si trova l'azione. 
          * RI: 
-         *    azienda non può essere {@code null}, stringa vuota o contenere solo spazi.
-         *    valore > 0.
-         *    quantità > 0.
+         *    - azienda != null.
+         *    - valore > 0.
+         *    - quantità > 0.
+         *    - nomeBorsa != null && !nomeBorsa.isBlank().
          */
 
         /**
@@ -255,7 +257,7 @@ public class Borsa implements Comparable<Borsa> {
         }
 
         /**
-         * Prendo il nome dell'azinda che ha emesso l'azione. 
+         * Prendo il nome dell'azienda che ha emesso l'azione. 
          * @return il nome dall'azienda.
          */
         public Azienda  azienda() {

@@ -21,10 +21,13 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.Scanner;
 
-import borsanova.*;
-import borsanova.PoliticaPrezzo.*;
+import borsanova.Azienda;
+import borsanova.Borsa;
+import borsanova.Operatore;
+import borsanova.PoliticaPrezzo.Soglia;
 /** Client di test per alcune funzionalità relative alle <strong>borse</strong>. */
 public class PoliticaPrezzoSogliaClient {
 
@@ -101,7 +104,7 @@ public class PoliticaPrezzoSogliaClient {
         Azienda azienda = null;
           if (operazione.equals("b")) {
             int prezzoTotale = Integer.parseInt(dati[2]);
-            Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+            Iterator<Borsa.Azione> azioni = borsa.azioniQuotate();
             while (azioni.hasNext()) {
               Borsa.Azione a = azioni.next();
               if (a.azienda().nome().equals(nomeAzienda))
@@ -111,7 +114,7 @@ public class PoliticaPrezzoSogliaClient {
               operatore.investi(borsa, azienda, prezzoTotale);
           } else if (operazione.equals("s")) {
             int numeroAzioni = Integer.parseInt(dati[2]);
-            Iterator<Borsa.Azione> azioniBorsa = borsa.aziendeQuotate();
+            Iterator<Borsa.Azione> azioniBorsa = borsa.azioniQuotate();
             while (azioniBorsa.hasNext()) {
               Borsa.Azione a = azioniBorsa.next();
               if (a.azienda().nome().equals(nomeAzienda) && operatore.possiedeAzione(a)) {
@@ -122,7 +125,7 @@ public class PoliticaPrezzoSogliaClient {
       }
     }
     // Stampa delle azioni
-    Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+    Iterator<Borsa.Azione> azioni = borsa.azioniQuotate();
     while (azioni.hasNext()) {
       Borsa.Azione azione = azioni.next();
       System.out.println(azione.azienda().nome() + ", " + azione.valore());

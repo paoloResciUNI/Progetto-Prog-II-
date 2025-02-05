@@ -1,6 +1,13 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import borsanova.Borsa.Azione;
 
@@ -9,26 +16,26 @@ import borsanova.Borsa.Azione;
  */
 public class Operatore implements Comparable<Operatore> {
 
-    /**{@code Nomi_Usati_Operatore} tiene traccia di tutti i nomi usati per definire gli operatori.*/ 
-     private static final SortedSet<String> nomiUsatiOperatore = new TreeSet<>();
+    /**{@code ISTANZE} tiene traccia di tutti i nomi usati per definire gli operatori.*/ 
+     private static final SortedSet<String> ISTANZE = new TreeSet<>();
     /**{@code nome} è il nome dell'operatore. */
      private final String nome; 
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
     /**{@code azioniPossedute} una collezioni che contiene tutte le azioni possedute da questo operatore*/
-    private TreeMap<Azione, Integer> azioniPossedute;
+    private final TreeMap<Azione, Integer> azioniPossedute;
     
 
-    /**
+    /*-
      * AF: 
-     *    Ogni peratore è identificato da un nome. 
-     *    Ogni operatore ha un budget.
-     *    Ogni operatore ha una collezione di azioni possedute. Ogni azione posseduta è associata ad un intero che rappresenta la quantità di azioni possedute. 
+     *    - nome: è il nome che identifica l'operatore. 
+     *    - budget: è il budget che ogni operatore può usare per fare acquisti, inizialmente uguale a 0.
+     *    - azioniPossedute: contiene tutte le azioni posseduta da questo operatore. Ogni azione è associata alla quantità posseduta dall'operatore in un determinato momento.
      * RI:
-     *    nome != null && nome != ""
-     *    budget >= 0
-     *    azioniPossedute.values() >= 0. Per ogni azione all'interno di azioniPossedute.
-     *    azioniPossedute.keySet() != null. Per ogni azione all'interno di azioniPossedute.
+     *    - nome != null && !nome.isBlank().
+     *    - budget >= 0.
+     *    - k != null per ogni azione all'interno di azioniPossedute.keySet().
+     *    - v > 0 per ogni v in azioniPossedute.values().
      */
 
 
@@ -41,8 +48,8 @@ public class Operatore implements Comparable<Operatore> {
     public static Operatore of(final String name) {
       if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
         throw new IllegalArgumentException("Name must not be empty.");
-      if (nomiUsatiOperatore.contains(name)) throw new IllegalArgumentException("Name already used.");
-      nomiUsatiOperatore.add(name);
+      if (ISTANZE.contains(name)) throw new IllegalArgumentException("Name already used.");
+      ISTANZE.add(name);
       return new Operatore(name);
     }
 
@@ -53,7 +60,7 @@ public class Operatore implements Comparable<Operatore> {
     private Operatore(String nomeOperatore) {
         nome = nomeOperatore;
         budget = 0; 
-        azioniPossedute = new TreeMap<Azione, Integer>();
+        azioniPossedute = new TreeMap<>();
     }
 
     /**

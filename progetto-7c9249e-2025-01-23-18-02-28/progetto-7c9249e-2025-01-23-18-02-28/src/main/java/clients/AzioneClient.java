@@ -20,8 +20,11 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 */
 package clients;
 
-import java.util.*;
-import borsanova.*;
+import java.util.Iterator;
+import java.util.Scanner;
+
+import borsanova.Azienda;
+import borsanova.Borsa;
 
 /**
  * Client di test per alcune funzionalità relative alle <strong>azioni</strong>.
@@ -68,7 +71,7 @@ public class AzioneClient {
       System.err.println("Errore: " + e.getMessage());
       System.exit(1);
     }
-    Iterator<Borsa.Azione> azioni = borsa.aziendeQuotate();
+    Iterator<Borsa.Azione> azioni = borsa.azioniQuotate();
     while (azioni.hasNext()) {
       Borsa.Azione azione = azioni.next();
       System.out.println(azione.azienda().nome() + ", " + azione.valore() + ", " + azione.quantita());  

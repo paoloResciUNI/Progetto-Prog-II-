@@ -21,8 +21,13 @@ along with this file.  If not, see <https://www.gnu.org/licenses/>.
 
 package clients;
 
-import borsanova.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Scanner;
+import java.util.Set;
+import java.util.TreeSet;
+
+import borsanova.Azienda;
+import borsanova.Borsa;
 
 /** Client di test per alcune funzionalità relative alle <strong>quotazioni</strong>. */
 public class QuotazioneClient {
@@ -93,7 +98,7 @@ public class QuotazioneClient {
     }
     for (Borsa b : borse) {
       System.out.println(b.nome());
-      Iterator<Borsa.Azione> aziendeBorsa = b.aziendeQuotate();
+      Iterator<Borsa.Azione> aziendeBorsa = b.azioniQuotate();
       while (aziendeBorsa.hasNext()) {
         System.out.println("- " + aziendeBorsa.next().azienda().nome());
       }

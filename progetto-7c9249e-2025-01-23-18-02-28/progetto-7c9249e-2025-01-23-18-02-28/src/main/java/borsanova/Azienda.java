@@ -1,24 +1,29 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * L'azinda può emettere le azioni quotandosi in borsa. 
  */
 public class Azienda implements Comparable<Azienda> {
-    /**{@code Nomi_Usati_Aziende} tiene traccia dei nomi usati per definire le aziende. */
-    private static final SortedSet<String> Nomi_Usati_Aziende = new TreeSet<>();
+    /**{@code ISTANZE} tiene traccia dei nomi usati per definire le aziende. */
+    private static final SortedSet<String> ISTANZE = new TreeSet<>();
     /**{@code nome} è il nome dell'azienda. */
     private final String nome;
     /**{@code borseQuotare} è una lista che contiene tutte le borse nel quale l'azienda si è quotata. */
     private final SortedSet<Borsa> borseQuotate;
 
-    /**
+    /*-
      * AF:
-     *      {@code nome}: è il nome che identifica l'azienda.
-     *      {@code borseQuotate}: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
+     *      - nome: è il nome che identifica l'azienda.
+     *      - borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
      * RI:
-     *      nome != null && nome != "" || !nome.isBlank().
+     *      - nome != null && !nome.isBlank().
+     *      - borseQuotate != null && b != null per ogni b in borseQuotate. 
      */
 
     /**
@@ -31,40 +36,43 @@ public class Azienda implements Comparable<Azienda> {
     public static Azienda of(final String name) {
         if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
             throw new IllegalArgumentException("Name must not be empty.");
-        if (Nomi_Usati_Aziende.contains(name))
+        if (ISTANZE.contains(name))
             throw new IllegalArgumentException("Name already used.");
-        Nomi_Usati_Aziende.add(name);
+        ISTANZE.add(name);
         return new Azienda(name);
     }
 
     /**
-     * Questa classe assegna un nome all'azienda.
+     * Questa classe assegna un nome all'azienda e istanzia {@code borseQuotate}.
      * 
      * @param nome è il nome che avrà l'azienda.
      */
-    private Azienda(String nome) throws IllegalArgumentException {
+    private Azienda(String nome) {
         this.nome = nome;
         borseQuotate = new TreeSet<>();
     }
 
     /**
-     * Questo metodo quota questa azienda in una borsa.
+     * Quota questa azienda in una borsa.
      * L'azienda viene quotata se il numero delle azioni e il loro valore è maggiore di zero. 
-     * Un'azienda si può quotare al più una volta nella stessa borsa  
+     * Un'azienda si può quotare al più una volta nella stessa borsa.  
      * 
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni} e {@code valorePerAzione} è minore o uguale a 0.  
+     * @throws IllegalArgumentException se {@code numeroAzioni}, {@code valorePerAzione} è minore o uguale a 0 e se {@code borsa} è già all'interno di {@code borseQuotate}.  
      * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
     public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException {
         Objects.requireNonNull(borsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
-        if (!(borseQuotate.contains(borsa))) {
-            borseQuotate.add(borsa);
-            borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
-        } else return;
+        if (borseQuotate.add(borsa)) {
+            try {
+                borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
+            } catch (IllegalArgumentException e) {
+                borseQuotate.remove(borsa);
+            }
+        } else throw new IllegalArgumentException("Quest'azienda è già quota nella borsa specficata!");
     }
     
     /**
