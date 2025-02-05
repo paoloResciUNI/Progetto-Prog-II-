@@ -60,10 +60,10 @@ public class Azienda implements Comparable<Azienda> {
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni}, {@code valorePerAzione} è minore o uguale a 0 e se {@code borsa} è già all'interno di {@code borseQuotate}.  
+     * @throws IllegalArgumentException se {@code numeroAzioni}, {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseQuotate}.  
      * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
-    public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException {
+    public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException, NullPointerException {
         Objects.requireNonNull(borsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
         if (borseQuotate.add(borsa)) {

@@ -72,7 +72,7 @@ public class Borsa implements Comparable<Borsa> {
      * Restituisce un iteratore per le azioni quotate in questa borsa. 
      * @return un iteratore per le azioni quotate in questa borsa. 
      */
-    public Iterator<Azione> aziendeQuotate() {
+    public Iterator<Azione> azioniQuotate() {
         return Collections.unmodifiableCollection(azioniQuotate).iterator();
     }
 

@@ -60,10 +60,8 @@ public class AzioneClient {
         String stringaIngresso = scanner.nextLine();
         String[] dati = stringaIngresso.split(" ");
         String nomeAzienda = dati[0];
-        int numero = 0;
-        int prezzoUnitario = 0;
-        numero = Integer.parseInt(dati[1]);
-        prezzoUnitario = Integer.parseInt(dati[2]);
+        int numero = Integer.parseInt(dati[1]);
+        int prezzoUnitario = Integer.parseInt(dati[2]);
         Azienda azienda = Azienda.of(nomeAzienda);
         azienda.quotazioneInBorsa(borsa, numero, prezzoUnitario);
       }
