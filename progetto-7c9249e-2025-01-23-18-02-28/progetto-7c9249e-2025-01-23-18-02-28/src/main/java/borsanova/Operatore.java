@@ -1,14 +1,6 @@
 package borsanova;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
+import java.util.*;
 import borsanova.Borsa.Azione;
 
 /**
@@ -86,7 +78,7 @@ public class Operatore implements Comparable<Operatore> {
      * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
      * @throws NullPointerException se l'azienda è null.
      */
-    public Integer mostraQuantitaAzione(Azienda nomeAzienda) throws NoSuchElementException, NullPointerException {
+    public int mostraQuantitaAzione(Azienda nomeAzienda) throws NoSuchElementException, NullPointerException {
       Objects.requireNonNull(nomeAzienda, "L'azienda non può essere null.");
       for (Azione a : azioniPossedute.keySet()) {
         if(a.azienda().nome().equals(nomeAzienda.nome())) return azioniPossedute.get(a);
@@ -121,13 +113,13 @@ public class Operatore implements Comparable<Operatore> {
       if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
       if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
-      Integer azioniComprate = investimento / azione.valore();
+      int azioniComprate = investimento / azione.valore();
       preleva(azioniComprate * azione.valore());
       if (!(possiedeAzione(azione))) {
         azioniPossedute.put(azione, azioniComprate);
         nomeBorsa.aggiungiOperatore(this);
       } else {
-        Integer nuovaQuantita = mostraQuantitaAzione(nomeAzione);
+        int nuovaQuantita = mostraQuantitaAzione(nomeAzione);
         nuovaQuantita += azioniComprate;
         azioniPossedute.put(azione, nuovaQuantita);
       }

@@ -184,14 +184,17 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Aggiunge un operatore alla borsa.
-     * @param nuovoOperatore il nuovo operatore da aggiungere alla borsa.
+     * @param operatore il nuovo operatore da aggiungere alla borsa.
      * @throws NullPointerException se il nome dell'operatore è {@code null}.  
-     * @throws IllegalArgumentException se l'operatore da aggiungere fa già parte della borsa. 
+     * @throws IllegalArgumentException se l'operatore da aggiungere non possiede azioni di questa borsa. 
      */
-    void aggiungiOperatore(Operatore nuovoOperatore) throws NullPointerException, IllegalArgumentException{
-        Objects.requireNonNull(nuovoOperatore);
-        if (operatoriBorsa.contains(nuovoOperatore)) throw new IllegalArgumentException("L'operatore è già presente nella borsa");
-        else operatoriBorsa.add(nuovoOperatore);
+    void aggiungiOperatore(Operatore operatore) throws NullPointerException, IllegalArgumentException{
+        Objects.requireNonNull(operatore);
+        Iterator<Azione> azioni = operatore.elencoAzioni();
+        while (azioni.hasNext()) {
+            if (azioni.next().nomeBorsa().equals(nome)) operatoriBorsa.add(operatore);
+        }
+        throw new IllegalArgumentException("L'operatore non può essere aggiunto a gli operatori di questa borsa.");
     }
 
     @Override 
