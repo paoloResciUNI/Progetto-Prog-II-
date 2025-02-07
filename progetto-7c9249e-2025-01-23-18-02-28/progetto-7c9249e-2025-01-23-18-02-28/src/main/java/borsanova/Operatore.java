@@ -153,6 +153,7 @@ public class Operatore implements Comparable<Operatore> {
      * Aggiorna l'elenco delle azioni possedute da questo operatore, in una determinata borsa, confrontandosi con la borsa.
      * @param borsa la borsa con il quale confrontare le azioni possedute. 
      */
+<<<<<<< HEAD
     public void aggiornaAzioni(Borsa borsa) {
       Iterator<Azione> azioniBorsa = borsa.azioniQuotate();
       while (azioniBorsa.hasNext()) {
@@ -161,6 +162,24 @@ public class Operatore implements Comparable<Operatore> {
         if (numeroAzioni > 0 && a.nomeBorsa().equals(borsa.nome())) {
           azioniPossedute.put(a, numeroAzioni);
         } else if (numeroAzioni == 0 && azioniPossedute.containsKey(a)) azioniPossedute.remove(a);
+=======
+    public void investi(Borsa nomeBorsa, Azienda nomeAzione, int investimento) throws IllegalArgumentException { 
+      Objects.requireNonNull(nomeBorsa, "La borsa non può essere null.");
+      Objects.requireNonNull(nomeAzione, "L'azienda non può essere null.");  
+      Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
+      if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
+      if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
+      int azioniComprate = investimento / azione.valore();
+      preleva(azioniComprate * azione.valore());
+      if (!(possiedeAzione(azione))) {
+        azioniPossedute.put(azione, azioniComprate);
+        nomeBorsa.aggiungiOperatore(this);
+      } else {
+        int nuovaQuantita = mostraQuantitaAzione(nomeAzione);
+        nuovaQuantita += azioniComprate;
+        azioniPossedute.put(azione, nuovaQuantita);
+>>>>>>> f02ee5c3a86d1acd300c8a8394be7db85e1e63cb
       }
     }
 

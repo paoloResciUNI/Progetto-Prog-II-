@@ -187,7 +187,7 @@ public class Borsa implements Comparable<Borsa> {
      * @param azione è l'azione che l'operatore vule vendere.
      * @param quantita è la quantità di azioni che l'operatore vuole vendere. 
      * @throws NullPointerException se l'azione o l'operatore è {@code null}.
-     * @throws IllegalArgumentException 
+     * @throws IllegalArgumentException se l'operatore non possiede le azioni che vuole vendere o non ne possiede in sefficiente quantità.
      */
     void vendita(Operatore operatore, Azione azione, int quantita) throws NullPointerException, IllegalArgumentException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
