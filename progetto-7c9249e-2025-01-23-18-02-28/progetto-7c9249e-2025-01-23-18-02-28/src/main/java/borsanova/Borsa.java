@@ -1,6 +1,12 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
@@ -189,7 +195,7 @@ public class Borsa implements Comparable<Borsa> {
      * @throws NullPointerException se l'azione o l'operatore è {@code null}.
      * @throws IllegalArgumentException se l'operatore non possiede le azioni che vuole vendere o non ne possiede in sefficiente quantità.
      */
-    void vendita(Operatore operatore, Azione azione, int quantita) throws NullPointerException, IllegalArgumentException {
+    public void vendita(Operatore operatore, Azione azione, int quantita) throws NullPointerException, IllegalArgumentException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
       Objects.requireNonNull(operatore, "L'operatore non può essere null");
       int azioniAttualmentePossedute = operatore.mostraQuantitaAzione(azione.azienda());

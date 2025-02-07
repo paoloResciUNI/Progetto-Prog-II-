@@ -96,64 +96,11 @@ public class Operatore implements Comparable<Operatore> {
       return azioniPossedute.containsKey(azione);
     }
 
-    // /**
-    //  * Un'operatore decide di acquistare una o più azioni. L'investimento deve essere maggiore di 0.
-    //  * L'investimento dell'operatore non può superare il suo budget e il budget deve essere maggiore del valore della singola azione.   
-    //  * @param nomeBorsa è la borsa dal quale l'operatore vuole comprare le azioni dell'azienda che gli interessa.
-    //  * @param azienda è il nome dell'azienda di cui l'operatore vuole acquistare le azioni. 
-    //  * @param investimento l'investimento. 
-    //  * @throws IllegalArgumentException se viene inserito un numero troppo grande di azioni da acquistare rispetto 
-    //  * a quelle acquistabili.
-    //  * @throws NullPointerException se la borsa o l'azienda sono null.
-    //  */
-    // public void investi(Borsa borsa, Azienda azienda, int investimento) throws IllegalArgumentException { 
-    //   Objects.requireNonNull(borsa, "La borsa non può essere null.");
-    //   Objects.requireNonNull(azienda, "L'azienda non può essere null.");  
-    //   int precedenteQuantita = 0;
-    //   Azione possibileInvestimento = borsa.cercaAzioneBorsa(azienda);
-    //   if (investimento/possibileInvestimento.valore() <= 0) {
-    //     throw new IllegalArgumentException("L'invastimento è troppo piccolo per l'azione");
-    //   }
-    //   if (azioniPossedute.containsKey(possibileInvestimento)) {
-    //     precedenteQuantita = azioniPossedute.get(possibileInvestimento);
-    //     azioniPossedute.put(possibileInvestimento, investimento/possibileInvestimento.valore()+precedenteQuantita);
-    //   } else {
-    //     azioniPossedute.put(possibileInvestimento, investimento/possibileInvestimento.valore());
-    //   }
-    //   try {
-    //     borsa.controllaInvestimento(this, possibileInvestimento, investimento, (investimento/possibileInvestimento.valore()) + precedenteQuantita);
-    //     preleva(investimento/possibileInvestimento.valore());
-    //   } catch (IllegalArgumentException e) {
-    //     if (precedenteQuantita != 0) azioniPossedute.put(possibileInvestimento, precedenteQuantita); 
-    //     else azioniPossedute.remove(possibileInvestimento);
-    //   }
-      
-    //   // if (nomeBorsa.mostraPoliticaPrezzo() != null) nomeBorsa.appilicaPoliticaAcquisto(azione, investimento); 
-    // }
-
-    // /**
-    //  * Un'operatore decide di vendere una o più azioni nella borsa.
-    //  * @param azione l'azione che l'operatore vuole vendere.
-    //  * @param borsa la borsa in cui l'operatore vende le azioni.
-    //  * @param quantità la quantità di azioni che l'operatore vuole vendere.
-    //  * @throws IllegalArgumentException se l'operatore non possiede abbastanza azioni da vendere.
-    //  * @throws NullPointerException se l'azione è null.
-    //  */
-    // public void vendi(Borsa borsa, Azione azione, int quantità) {
-    //   Objects.requireNonNull(azione, "L'azione non può essere null.");
-    //   int azioniAttualmentePossedute = mostraQuantitaAzione(azione.azienda());
-    //   if (possiedeAzione(azione) && azioniAttualmentePossedute < quantità) throw new IllegalArgumentException("Non hai abbastanza azioni da vendere.");
-    //   azioniPossedute.put(azione, azioniAttualmentePossedute - quantità);
-    //   budget += azione.valore() * quantità;
-    //   if (azioniPossedute.get(azione) <= 0) azioniPossedute.remove(azione);
-    //   if (borsa.mostraPoliticaPrezzo() != null) borsa.appilicaPoliticaVendita(azione, quantità);
-    // }
 
     /**
      * Aggiorna l'elenco delle azioni possedute da questo operatore, in una determinata borsa, confrontandosi con la borsa.
      * @param borsa la borsa con il quale confrontare le azioni possedute. 
      */
-<<<<<<< HEAD
     public void aggiornaAzioni(Borsa borsa) {
       Iterator<Azione> azioniBorsa = borsa.azioniQuotate();
       while (azioniBorsa.hasNext()) {
@@ -162,24 +109,6 @@ public class Operatore implements Comparable<Operatore> {
         if (numeroAzioni > 0 && a.nomeBorsa().equals(borsa.nome())) {
           azioniPossedute.put(a, numeroAzioni);
         } else if (numeroAzioni == 0 && azioniPossedute.containsKey(a)) azioniPossedute.remove(a);
-=======
-    public void investi(Borsa nomeBorsa, Azienda nomeAzione, int investimento) throws IllegalArgumentException { 
-      Objects.requireNonNull(nomeBorsa, "La borsa non può essere null.");
-      Objects.requireNonNull(nomeAzione, "L'azienda non può essere null.");  
-      Azione azione = nomeBorsa.cercaAzioneBorsa(nomeAzione);
-      if (investimento > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
-      if (investimento < azione.valore()) throw new IllegalArgumentException("Non hai abbastanza soldi per comprare queste azioni.");
-      if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
-      int azioniComprate = investimento / azione.valore();
-      preleva(azioniComprate * azione.valore());
-      if (!(possiedeAzione(azione))) {
-        azioniPossedute.put(azione, azioniComprate);
-        nomeBorsa.aggiungiOperatore(this);
-      } else {
-        int nuovaQuantita = mostraQuantitaAzione(nomeAzione);
-        nuovaQuantita += azioniComprate;
-        azioniPossedute.put(azione, nuovaQuantita);
->>>>>>> f02ee5c3a86d1acd300c8a8394be7db85e1e63cb
       }
     }
 
