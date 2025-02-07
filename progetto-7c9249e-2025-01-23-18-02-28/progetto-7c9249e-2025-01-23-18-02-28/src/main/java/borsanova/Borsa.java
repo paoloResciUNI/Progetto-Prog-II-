@@ -1,16 +1,11 @@
 package borsanova;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
 
-  //Per lo svolgimento del progetto mi sono confrontato con i miei compagni di corso: Fernando Gavezzotti e Matteo Mascherpa. 
+//Per lo svolgimento del progetto mi sono confrontato con i miei colleghi: Fernando Gavezzotti, Matteo Mascherpa e Alessandro Fascini. 
  
 
 /**
@@ -90,7 +85,7 @@ public class Borsa implements Comparable<Borsa> {
      * Mostra la politica di prezzo della borsa.
      * @return la politica di prezzo della borsa.
      */
-    public PoliticaPrezzo mostraPoliticaPrezzo() {
+    public PoliticaPrezzo politicaPrezzo() {
         return politicaPrezzo;
     }
 
@@ -100,10 +95,10 @@ public class Borsa implements Comparable<Borsa> {
      * @param numeroAzioni il numero di azioni da vendere.
      * @throws NullPointerException se l'azione è {@code null}.
      */
-    void appilicaPoliticaVendita(Azione azione, int numeroAzioni) throws NullPointerException {
+    private void appilicaPoliticaVendita(Azione azione, int numeroAzioni) throws NullPointerException {
         Objects.requireNonNull(azione);
         var nuovoValore = politicaPrezzo.vendita(azione, numeroAzioni);
-        azione.newValue(nuovoValore);        
+        azione.nuovoValore(nuovoValore);        
     }
 
     /**
@@ -112,10 +107,10 @@ public class Borsa implements Comparable<Borsa> {
      * @param numeroAzioni il numero di azioni da acquistare.
      * @throws NullPointerException se l'azione è {@code null}.
      */
-    void appilicaPoliticaAcquisto(Azione azione, int numeroAzioni) throws NullPointerException {
+    private void appilicaPoliticaAcquisto(Azione azione, int numeroAzioni) throws NullPointerException {
         Objects.requireNonNull(azione);
         int nuovoValore = politicaPrezzo.acquisto(azione, numeroAzioni);
-        azione.newValue(nuovoValore);
+        azione.nuovoValore(nuovoValore);
     }
 
     /**
@@ -132,6 +127,7 @@ public class Borsa implements Comparable<Borsa> {
      * @param valoreAzione valore per azione dell'azienda.
      * @param quantitàAzione quantità di azioni che l'azienda mette a disposizione.
      * @throws NullPointerException se il nome dell'azienda è {@code null}.
+     * @throws IllegalArgumentException se la quantità delle azioni o il loro valore è minore o uguale a 0, oppure se l'azienda è già quotata in questa borsa.  
      */
     void QuotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
         Objects.requireNonNull(azienda);
@@ -164,42 +160,54 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * Ricerca del numero di azioni disponibili nella borsa. 
-     * @param nomeAzione è il nome dell'azione da cercare.
-     * @return il numeor di azioni disponibili ancora in questa borsa.
-     * @throws NullPointerException se il nome dell'azienda è {@code null}.
+     * Un'operatore richiede l'azione che vuole comprare a questa borsa e, se l'azione può essere rilasciata, quest'ultima applica la politica prezzo della alla fine dell'acquisto. 
+     * @param operatore è l'operatore che vuole coprare un'azione da questa 
+     * @param azienda è l'azienda del quale l'operatore vule comprare le azioni.
+     * @param investimento è l'investimento che l'operatore vuole effettuare. 
+     * @throws IllegalArgumentException se l'investimento dell'operatore è: maggiore del suo budget, minore del valore di una singola azione oppure se non ci sono abbastanza azioni da comprare nella borsa. 
+     * @throws NullPointerException se l'operatore o la borsa sono {@code null}.
      */
-    public int azioniDisponibili(Azienda nomeAzione) throws NullPointerException {
-        Objects.requireNonNull(nomeAzione);
-        int disponibili = 0; 
-        int comprate = 0;
-        for (Azione a: azioniQuotate) {
-            if (nomeAzione.nome().equals(a.azienda().nome())) disponibili = a.quantita();
-        }
-        for (Operatore o: operatoriBorsa) {
-            comprate += o.mostraQuantitaAzione(nomeAzione);
-        }
-        return disponibili - comprate;
+    public void acquisto(Operatore operatore, Azienda azienda, int investimento) throws NullPointerException, IllegalArgumentException {
+        Objects.requireNonNull(operatore, "L'operatore non può essere null.");
+        Objects.requireNonNull(azienda, "L'azione non può essere null.");
+        Azione azione = cercaAzioneBorsa(azienda); 
+        if (investimento > operatore.budget()) throw new IllegalArgumentException("L'operatore non ha i soldi per effettuare l'investimento.");
+        if (investimento < azione.valore()) throw new IllegalArgumentException("L'operatore non ha abbastanza soldi per comprare queste azioni.");
+        if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
+        operatore.preleva((investimento/azione.valore())*azione.valore());
+        azione.proprietari.put(operatore, investimento/azione.valore());
+        if (politicaPrezzo != null) appilicaPoliticaAcquisto(azione, investimento);
+        operatoriBorsa.add(operatore);
+        operatore.aggiornaAzioni(this);
     }
 
     /**
-     * Aggiunge un operatore alla borsa.
-     * @param nuovoOperatore il nuovo operatore da aggiungere alla borsa.
-     * @throws NullPointerException se il nome dell'operatore è {@code null}.  
-     * @throws IllegalArgumentException se l'operatore da aggiungere fa già parte della borsa. 
+     * Questa borsa controlla la vendita che l'operatore vuole fare e, se è possibile vendere, applica la politica prezzo dopo la vendita.  
+     * @param operatore è l'operatore che vuole vendere un certo quantitativo di azioni.
+     * @param azione è l'azione che l'operatore vule vendere.
+     * @param quantita è la quantità di azioni che l'operatore vuole vendere. 
+     * @throws NullPointerException se l'azione o l'operatore è {@code null}.
+     * @throws IllegalArgumentException 
      */
-    void aggiungiOperatore(Operatore nuovoOperatore) throws NullPointerException, IllegalArgumentException{
-        Objects.requireNonNull(nuovoOperatore);
-        if (operatoriBorsa.contains(nuovoOperatore)) throw new IllegalArgumentException("L'operatore è già presente nella borsa");
-        else operatoriBorsa.add(nuovoOperatore);
+    void vendita(Operatore operatore, Azione azione, int quantita) throws NullPointerException, IllegalArgumentException {
+      Objects.requireNonNull(azione, "L'azione non può essere null.");
+      Objects.requireNonNull(operatore, "L'operatore non può essere null");
+      int azioniAttualmentePossedute = operatore.mostraQuantitaAzione(azione.azienda());
+      if (operatore.possiedeAzione(azione) && azioniAttualmentePossedute < quantita) throw new IllegalArgumentException("L'operatore non ha abbastanza azioni da vendere.");
+      int azioniRimanenti = azioniAttualmentePossedute - quantita;
+      azione.proprietari.put(operatore, azioniRimanenti);
+      operatore.deposita(quantita*azione.valore());
+      appilicaPoliticaVendita(azione, quantita);
+      operatore.aggiornaAzioni(this);
     }
+
 
     @Override 
     public boolean equals(Object obj) {
-        if (!(obj instanceof Borsa)) {
-            return false;
+        if (obj instanceof Borsa other) {
+            return nome.equals(other.nome());
         }
-        return nome.equals(obj.toString());
+        return false;
     }
 
     @Override
@@ -226,6 +234,8 @@ public class Borsa implements Comparable<Borsa> {
         private int valore;
         /**{@code quantità} è la quantità di azioni totalmente disponibili. */
         private int quantita;
+        /**{@code proprietari} è una mappa contenente i proprietari di questa azione associati al nemero di azioni possedute. */
+        private TreeMap<Operatore, Integer> proprietari;
 
         /*-
          * AF:
@@ -233,17 +243,21 @@ public class Borsa implements Comparable<Borsa> {
          *    - quantita: rappresenta il numero di azioni presenti in questa borsa.  
          *    - valore: rappresenta il valore della singola Azione. 
          *    - nomeBorsa: è il nome della borsa dove si trova l'azione. 
+         *    - proprietari: è l'insieme degli operatori che possiedono questa azione e del numero di azioni possedute.
+         *    
          * RI: 
          *    - azienda != null.
          *    - valore > 0.
          *    - quantità > 0.
          *    - nomeBorsa != null && !nomeBorsa.isBlank().
+         *    - prorpietari != null && proprietiario != null per ogni proprietario in proprietari. 
          */
 
         /**
          * Crea un'insieme un'azione di per una determinata azienda.
          * @param nome il nome dell'azienda che emette l'azone.
          * @param value il valore per singola azione.
+         * @param proprietari mappa contente i proprietari dell'azione con la relativa quantità. 
          * @param numeroAzioni il numero di azioni disponibili per l'acquisto.
          * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono \le 0.
          * @throws NullPointerException se il nome dell'azienda è {@code null}. 
@@ -254,6 +268,7 @@ public class Borsa implements Comparable<Borsa> {
             azienda = nome;
             valore = value;
             quantita = numeroAzioni;
+            proprietari = new TreeMap<>();
         }
 
         /**
@@ -281,11 +296,20 @@ public class Borsa implements Comparable<Borsa> {
         }
 
         /**
-         * Modifica il valore dell'azione. 
-         * @param newValue il nuovo valore dell'azione.
+         * Ritorna le azioni possedute da uno specifico operatore. Se l'operatore non possiede stock di quest'azione restituisce 0. 
+         * @param operatore è l'operatore del quale si vuole sapere il numero di azioni possedute.
+         * @return il numero di azioni possedute dall'operatore.
          */
-        private void newValue(int newValue) {
-            valore = newValue;
+        public int azioniDetenute(Operatore operatore) {
+            return proprietari.getOrDefault(operatore, 0);
+        }
+
+        /**
+         * Modifica il valore dell'azione. 
+         * @param nuovoValore il nuovo valore dell'azione.
+         */
+        private void nuovoValore(int nuovoValore) {
+            valore = nuovoValore;
         }
 
         /**

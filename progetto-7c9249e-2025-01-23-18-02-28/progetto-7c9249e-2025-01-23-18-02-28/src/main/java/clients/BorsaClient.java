@@ -119,6 +119,7 @@ public class BorsaClient {
     }
     while (in.hasNext()) {
       String line = in.nextLine();
+      System.out.println(line);
       String[] tokens = line.split(" ");
       Operatore operatoreDaConsiderare = null;
       Borsa borsaDaConsiderare = null;
@@ -141,13 +142,12 @@ public class BorsaClient {
       if (tokens[1].equals("b")) {
         operatoreDaConsiderare.investi(borsaDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
       } else if (tokens[1].equals("s")) {
-        Borsa.Azione azioneDaVendere = null;
-        azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
+        Borsa.Azione azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
+        try {
         operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
+        } catch (IllegalArgumentException e) {}
       }
     }
-  } catch (Exception e) {
-    
   }
     for (Borsa borsa : borse) {
       System.out.println(borsa.nome());
