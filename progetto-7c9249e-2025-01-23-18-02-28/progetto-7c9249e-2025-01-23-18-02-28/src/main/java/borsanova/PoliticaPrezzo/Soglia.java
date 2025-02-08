@@ -13,11 +13,11 @@ public class Soglia implements PoliticaPrezzo {
     /**{@code soglia} è il valore della soglia che se superata, in caso di acquisto o vendita, applica il cambiamento del valore delle azioni*/
     private int soglia;
 
-    /**
+    /*-
      * AF:
-     *     soglia dal quale si applica il cambio del valore.
+     *     - soglia: è il numero di azioni che se superato va ad applicare il cambio del valore dell'azione.
      * IR:
-     *     soglia >= 0
+     *     - soglia >= 0
      */
 
     /**
@@ -28,26 +28,19 @@ public class Soglia implements PoliticaPrezzo {
         this.soglia = Math.abs(soglia);
     }
 
-    /**
-     * Sancisce il cambio di valore dell'azione alla vendita dell'azione.
-     * @param azione l'azione che si vuole vendere.
-     * @param numeroAzioni il numero di azioni che si vogliono vendere.
-     */
+    @Override
     public int vendita(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
         if (numeroAzioni > soglia && valoreAttuale/2 >= 1) return (valoreAttuale/2);
-        else if (valoreAttuale/2 < 1) return 1;
+        else if (numeroAzioni > soglia && valoreAttuale/2 < 1) return 1;
         else return azione.valore();
     }
     
-    /**
-     * Sancisce il cambio di valore dell'azione all'acquisto dell'azione.
-     * @param azione l'azione che si vuole acquistare.
-     * @param numeroAzioni il numero di azioni che si vogliono acquistare.
-     */
+
+    @Override
     public int acquisto(Azione azione, int numeroAzioni) {
         int valoreAttuale = azione.valore();
         if (numeroAzioni > soglia) return (valoreAttuale*2);
-        return azione.valore();
+        else return azione.valore();
     }
 }

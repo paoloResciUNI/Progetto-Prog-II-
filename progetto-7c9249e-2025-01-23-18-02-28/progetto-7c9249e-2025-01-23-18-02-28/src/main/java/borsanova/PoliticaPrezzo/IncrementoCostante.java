@@ -11,11 +11,11 @@ public class IncrementoCostante implements PoliticaPrezzo {
     /**{@code incremento} è il valore dell'incremento costante */
     private int incremento;
 
-    /**
+    /*-
      * AF:
-     *     incremento costante del valore. 
+     *     - incremento: è l'incrememnto del valore dell'azione in caso di acquisto. 
      * IR:
-     *     incremento >= 0
+     *     - incremento >= 0
      */
 
     /**

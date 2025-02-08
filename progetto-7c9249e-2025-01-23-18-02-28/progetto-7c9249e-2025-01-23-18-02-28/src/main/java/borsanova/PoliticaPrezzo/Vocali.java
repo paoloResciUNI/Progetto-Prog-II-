@@ -17,12 +17,12 @@ public class Vocali implements PoliticaPrezzo {
     /**{@code Vocali} è l'insieme delle vocali maiuscole */
     private static final Set<Character> Vocali = new HashSet<>(Arrays.asList('A', 'E', 'I', 'O', 'U'));
 
-    /**
+    /*-
      * AF: 
-     *     L'azione viene coinvolta nella politica di prezzo se la prima lettera del nome dell'azienda o della nomeBorsa iniziano per {@code lettera} o per vocale.
+     *     - L'azione viene coinvolta nella politica di prezzo se la prima lettera del nome dell'azienda o della nomeBorsa iniziano per il carattere lettera o per vocale.
      * IR:
-     *     lettera != null
-     *     lettera deve essere un carattere dell'alfabeto inglese.
+     *     - lettera != null.
+     *     - A <= lettera <= Z && a <= lettera <= z.
      */
 
     /**

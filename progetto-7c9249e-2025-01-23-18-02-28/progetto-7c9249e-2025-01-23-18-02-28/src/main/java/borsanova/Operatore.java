@@ -4,7 +4,9 @@ import java.util.*;
 import borsanova.Borsa.Azione;
 
 /**
- * L'operatore può comprare e vendere azioni delle aziende quotate in bora.
+ * L'operatore può comprare e vendere azioni delle aziende quotate in bora, in base al budget che possiede.
+ * Il budget non può essere negativo. 
+ * L'operatore tiene traccia delle azioni che possiede. 
  */
 public class Operatore implements Comparable<Operatore> {
 
@@ -14,7 +16,7 @@ public class Operatore implements Comparable<Operatore> {
      private final String nome; 
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
-    /**{@code azioniPossedute} una collezione che contiene tutte le azioni possedute da questo operatore*/
+    /**{@code azioniPossedute} una collezione che contiene tutte le azioni possedute da questo operatore, con associato per ogni azione la sua quantità.*/
     private final Map<Azione, Integer> azioniPossedute;
     
 
@@ -35,7 +37,7 @@ public class Operatore implements Comparable<Operatore> {
      * Fabbricatore dell'operatore
      * @param name il nome da dare all'operatore.
      * @return un nuovo operatore di nome {@code name}
-     * @throws IllegalArgumentException se {@code name} è vuto o se il nome è già stato usato da un'altro operatore. 
+     * @throws IllegalArgumentException se {@code name} è vuoto o se il nome è già stato usato da un'altro operatore. 
      */
     public static Operatore of(final String name) {
       if (Objects.requireNonNull(name, "Il nome non può essere null.").isBlank())
@@ -46,7 +48,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Viene dato un nome all'operatore, che non sia ancora stato usato, e gli si da un budget di partenza pari a 0. 
+     * Viene dato un nome all'operatore e gli si da un budget di partenza pari a 0. 
      * @param nomeOperatore nome del nuovo operatore.
      */
     private Operatore(String nomeOperatore) {
@@ -73,21 +75,18 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * Restituisce la quantità di azioni possedute dall'operatore.
-     * @param nomeAzienda l'azienda di cui si vuole sapere la quantità di azioni possedute.
+     * @param azione l'azione di cui si vuole sapere la quantità di stock posseduti.
      * @return il numero di azioni della specifica azienda possedute dall'operatore.
      * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
      * @throws NullPointerException se l'azienda è null.
      */
-    public int mostraQuantitaAzione(Azienda nomeAzienda) throws NoSuchElementException, NullPointerException {
-      Objects.requireNonNull(nomeAzienda, "L'azienda non può essere null.");
-      for (Azione a : azioniPossedute.keySet()) {
-        if(a.azienda().nome().equals(nomeAzienda.nome())) return azioniPossedute.get(a);
-      }
-      throw new NoSuchElementException("L'operatore non ha stock di questa azienda");
+    public int numeroAzioni(Azione azione) throws NoSuchElementException, NullPointerException {
+      Objects.requireNonNull(azione, "L'azione non può essere null.");
+      return azioniPossedute.getOrDefault(azione, 0);
     }
     
     /**
-     * Se l'operatore trova l'azione nelle azioni possedute.
+     * Se l'operatore trova {@code azione} nelle azioni possedute viene restituito un valore booleano {@code true} altrimenti {@code false}.
      * @param azione l'azione da conoscere.
      * @return {@code true} se l'azione è posseduta, {@code false} altrimenti.
      */
@@ -95,7 +94,6 @@ public class Operatore implements Comparable<Operatore> {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
       return azioniPossedute.containsKey(azione);
     }
-
 
     /**
      * Aggiorna l'elenco delle azioni possedute da questo operatore, in una determinata borsa, confrontandosi con la borsa.
@@ -111,7 +109,6 @@ public class Operatore implements Comparable<Operatore> {
         } else if (numeroAzioni == 0 && azioniPossedute.containsKey(a)) azioniPossedute.remove(a);
       }
     }
-
 
     /**
      * Ritorna il valore totale di tutte le azioni possedute dall'operatore.
@@ -168,5 +165,4 @@ public class Operatore implements Comparable<Operatore> {
     public int compareTo(Operatore other) {
       return nome.compareTo(other.nome);
     }
-
 }

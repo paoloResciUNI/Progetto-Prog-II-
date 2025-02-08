@@ -11,11 +11,11 @@ public class DecrementoCostante implements PoliticaPrezzo {
     /**{@code decremento} è il valore del decremento costante */
     private int decremento;
 
-    /**
+    /*-
      * AF:
-     *    decremento costante del valore. 
+     *    - decremento: è il decremento del valore dell'azione in caso di vendita. 
      * IR:
-     *    decremento >= 0.
+     *    - decremento >= 0.
      */
 
 

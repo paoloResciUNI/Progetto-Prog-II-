@@ -72,7 +72,7 @@ public class AzioneClient {
     Iterator<Borsa.Azione> azioni = borsa.azioniQuotate();
     while (azioni.hasNext()) {
       Borsa.Azione azione = azioni.next();
-      System.out.println(azione.azienda().nome() + ", " + azione.valore() + ", " + azione.quantita());  
+      System.out.println(azione.azienda().nome() + ", " + azione.valore() + ", " + azione.quantitaDisponibile());  
     }
   }
 }

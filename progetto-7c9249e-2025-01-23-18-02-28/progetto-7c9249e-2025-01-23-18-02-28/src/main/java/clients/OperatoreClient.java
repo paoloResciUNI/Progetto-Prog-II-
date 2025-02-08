@@ -146,11 +146,11 @@ public class OperatoreClient {
         }
       }
       if (tokens[1].equals("b")) {
-        operatoreDaConsiderare.investi(borsaDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
+        borsaDaConsiderare.acquisto(operatoreDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
       } else if (tokens[1].equals("s")) {
         Borsa.Azione azioneDaVendere = null;
         azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
-        operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
+        borsaDaConsiderare.vendita(operatoreDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
       } else if (tokens[1].equals("d")) {
         operatoreDaConsiderare.deposita(Integer.parseInt(tokens[2]));
       } else if (tokens[1].equals("w")) {
@@ -163,7 +163,7 @@ public class OperatoreClient {
       Iterator<Azione> azioniOperatore = o.elencoAzioni();
       while (azioniOperatore.hasNext()) {
         Azione azioneOp = azioniOperatore.next();
-        int numAzione = o.mostraQuantitaAzione(azioneOp.azienda());
+        int numAzione = o.numeroAzioni(azioneOp);
         if (numAzione > 0 ) System.out.println("- "+azioneOp.nomeBorsa()+", "+azioneOp.azienda().nome()+", "+ numAzione);
       }
     }

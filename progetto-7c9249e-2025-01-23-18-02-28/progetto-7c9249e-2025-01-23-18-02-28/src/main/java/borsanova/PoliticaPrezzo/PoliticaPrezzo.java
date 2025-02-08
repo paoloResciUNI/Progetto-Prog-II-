@@ -3,10 +3,7 @@ package borsanova.PoliticaPrezzo;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa interfaccia serve per applicare la politica del prezzo che gestisce la variazione del valore di un'azione
- * in caso di vendita o di acquisto della stessa.
- * Tutte le classi che implementano questa interfaccia devono sovrascrivere i metodi vendita e acquisto che gestiranno la politica
- * del prezzo durante le relative operazioni.
+ * Questa interfaccia serve per applicare la politica del prezzo che gestisce la variazione del valore di un'azione in caso di vendita o di acquisto della stessa.
  */
 public interface PoliticaPrezzo {
     /**

@@ -1,10 +1,6 @@
 package borsanova;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import java.util.*;
 
 /**
  * L'azinda può emettere le azioni quotandosi in borsa. 
@@ -60,7 +56,7 @@ public class Azienda implements Comparable<Azienda> {
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni}, {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseQuotate}.  
+     * @throws IllegalArgumentException se {@code numeroAzioni} o {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseQuotate}.  
      * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
     public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException, NullPointerException {
@@ -76,7 +72,7 @@ public class Azienda implements Comparable<Azienda> {
     }
     
     /**
-     * Restituisce un iteratore per le borse quotate in questa azienda.
+     * Restituisce un iteratore per delle borse nel quale questa azienda è quotata.
      * @return un iteratore per le borse quotate in questa azienda.
      */
     public Iterator<Borsa> borseQuotate() {
@@ -84,7 +80,7 @@ public class Azienda implements Comparable<Azienda> {
     }
 
     /**
-     * restituisce il nome dell'azienda.
+     * Restituisce il nome dell'azienda.
      * @return il nome dell'azienda.
      */
     public String nome() {
@@ -106,6 +102,18 @@ public class Azienda implements Comparable<Azienda> {
     @Override
     public int compareTo(Azienda altAzienda) {
         return nome.compareTo(altAzienda.nome);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder(nome+": ");
+        Iterator<Borsa> borse = borseQuotate.iterator();
+        while (borse.hasNext()) {
+            Borsa b = borse.next();
+            if (borse.hasNext()) sb.append(b.nome() + ", ");
+            else sb.append(b.nome());
+        }
+        return sb.toString();
     }
 
 }

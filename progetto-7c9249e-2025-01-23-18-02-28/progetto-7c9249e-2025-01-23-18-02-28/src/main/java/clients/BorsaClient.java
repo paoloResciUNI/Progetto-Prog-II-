@@ -119,7 +119,6 @@ public class BorsaClient {
     }
     while (in.hasNext()) {
       String line = in.nextLine();
-      System.out.println(line);
       String[] tokens = line.split(" ");
       Operatore operatoreDaConsiderare = null;
       Borsa borsaDaConsiderare = null;
@@ -140,11 +139,11 @@ public class BorsaClient {
         }
       }
       if (tokens[1].equals("b")) {
-        operatoreDaConsiderare.investi(borsaDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
+        borsaDaConsiderare.acquisto(operatoreDaConsiderare, aziendaDaConsiderare, Integer.parseInt(tokens[4]));
       } else if (tokens[1].equals("s")) {
         Borsa.Azione azioneDaVendere = borsaDaConsiderare.cercaAzioneBorsa(aziendaDaConsiderare);
         try {
-        operatoreDaConsiderare.vendi(borsaDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
+        borsaDaConsiderare.vendita(operatoreDaConsiderare, azioneDaVendere, Integer.parseInt(tokens[4]));
         } catch (IllegalArgumentException e) {}
       }
     }
@@ -154,10 +153,10 @@ public class BorsaClient {
       Iterator<Borsa.Azione> azioniNellaBorsa = borsa.azioniQuotate();
       while (azioniNellaBorsa.hasNext()) {
         Borsa.Azione action = azioniNellaBorsa.next();
-        System.out.println("- " + action.azienda().nome() + " " + action.quantita());
+        System.out.println("- " + action.azienda().nome() + " " + action.quantitaDisponibile());
         for (Operatore operatore : operatori) {
-          if (operatore.possiedeAzione(action) && operatore.mostraQuantitaAzione(action.azienda()) >0) {
-            System.out.println("= " + operatore.nome() + " " + operatore.mostraQuantitaAzione(action.azienda()));
+          if (operatore.possiedeAzione(action) && operatore.numeroAzioni(action) >0) {
+            System.out.println("= " + operatore.nome() + " " + operatore.numeroAzioni(action));
           }
         }
       }

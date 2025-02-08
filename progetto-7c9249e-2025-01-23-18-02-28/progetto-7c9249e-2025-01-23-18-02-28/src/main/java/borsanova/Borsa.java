@@ -1,13 +1,6 @@
 package borsanova;
 
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.SortedSet;
-import java.util.TreeMap;
-import java.util.TreeSet;
-
+import java.util.*;
 import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
 
@@ -16,7 +9,8 @@ import borsanova.PoliticaPrezzo.PoliticaPrezzo;
 
 /**
  * La borsa tiene traccia di tutte le aziende quotate e delle loro azioni. Tiene anche traccia di tutti gli operatori che 
- * operano con questa borsa. Usa anche una politica di prezzo per operare direttamente sul valore delle singole azioni. 
+ * operano con questa borsa. 
+ * La borsa usa una politica di prezzo per operare sul valore delle singole azioni. 
  */
 public class Borsa implements Comparable<Borsa> {
     /**{@code ISTANZE} è una collezione contenente tutti i nomi usati per nominare le borse. */
@@ -131,7 +125,7 @@ public class Borsa implements Comparable<Borsa> {
      * Aggiunge l'azione all'insieme delle aziende quotate in questa borsa 
      * @param azienda è il nome dell'azinda che si sta quotando in borsa.
      * @param valoreAzione valore per azione dell'azienda.
-     * @param quantitàAzione quantità di azioni che l'azienda mette a disposizione.
+     * @param quantitaAzione quantità di azioni che l'azienda mette a disposizione.
      * @throws NullPointerException se il nome dell'azienda è {@code null}.
      * @throws IllegalArgumentException se la quantità delle azioni o il loro valore è minore o uguale a 0, oppure se l'azienda è già quotata in questa borsa.  
      */
@@ -179,10 +173,13 @@ public class Borsa implements Comparable<Borsa> {
         Azione azione = cercaAzioneBorsa(azienda); 
         if (investimento > operatore.budget()) throw new IllegalArgumentException("L'operatore non ha i soldi per effettuare l'investimento.");
         if (investimento < azione.valore()) throw new IllegalArgumentException("L'operatore non ha abbastanza soldi per comprare queste azioni.");
-        if (investimento/azione.valore() > azione.quantita()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
+        if (investimento/azione.valore() > azione.quantitaDisponibile()) throw new IllegalArgumentException("Non ci sono abbastanza azioni disponibili.");
         operatore.preleva((investimento/azione.valore())*azione.valore());
-        azione.proprietari.put(operatore, investimento/azione.valore());
-        if (politicaPrezzo != null) appilicaPoliticaAcquisto(azione, investimento);
+        if (azione.proprietari.containsKey(operatore)) {
+            int azioniInPossesso = azione.proprietari.get(operatore); 
+            azione.proprietari.put(operatore, (investimento/azione.valore())+azioniInPossesso);
+        } else azione.proprietari.put(operatore, investimento/azione.valore());
+        if (politicaPrezzo != null) appilicaPoliticaAcquisto(azione, investimento/azione.valore());
         operatoriBorsa.add(operatore);
         operatore.aggiornaAzioni(this);
     }
@@ -198,12 +195,12 @@ public class Borsa implements Comparable<Borsa> {
     public void vendita(Operatore operatore, Azione azione, int quantita) throws NullPointerException, IllegalArgumentException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
       Objects.requireNonNull(operatore, "L'operatore non può essere null");
-      int azioniAttualmentePossedute = operatore.mostraQuantitaAzione(azione.azienda());
+      int azioniAttualmentePossedute = operatore.numeroAzioni(azione);
       if (operatore.possiedeAzione(azione) && azioniAttualmentePossedute < quantita) throw new IllegalArgumentException("L'operatore non ha abbastanza azioni da vendere.");
       int azioniRimanenti = azioniAttualmentePossedute - quantita;
       azione.proprietari.put(operatore, azioniRimanenti);
       operatore.deposita(quantita*azione.valore());
-      appilicaPoliticaVendita(azione, quantita);
+      if (politicaPrezzo != null) appilicaPoliticaVendita(azione, quantita);
       operatore.aggiornaAzioni(this);
     }
 
@@ -227,7 +224,7 @@ public class Borsa implements Comparable<Borsa> {
 
     @Override
     public String toString() {
-        return nome+ ": " + azioniQuotate.toString() + "\n";
+        return nome+ ": " + azioniQuotate.toString();
     }
 
     /**
@@ -239,7 +236,7 @@ public class Borsa implements Comparable<Borsa> {
         /**{@code valore} è il valore della singola azione. */
         private int valore;
         /**{@code quantità} è la quantità di azioni totalmente disponibili. */
-        private int quantita;
+        private final int quantita;
         /**{@code proprietari} è una mappa contenente i proprietari di questa azione associati al nemero di azioni possedute. */
         private TreeMap<Operatore, Integer> proprietari;
 
@@ -263,7 +260,6 @@ public class Borsa implements Comparable<Borsa> {
          * Crea un'insieme un'azione di per una determinata azienda.
          * @param nome il nome dell'azienda che emette l'azone.
          * @param value il valore per singola azione.
-         * @param proprietari mappa contente i proprietari dell'azione con la relativa quantità. 
          * @param numeroAzioni il numero di azioni disponibili per l'acquisto.
          * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono \le 0.
          * @throws NullPointerException se il nome dell'azienda è {@code null}. 
@@ -302,6 +298,14 @@ public class Borsa implements Comparable<Borsa> {
         }
 
         /**
+         * Restituisce la quantità totale di azioni esistenti in questa borsa.
+         * @return la quantità di azioni nella borsa. 
+         */
+        public int quantita() {
+            return quantita;
+        }
+
+        /**
          * Ritorna le azioni possedute da uno specifico operatore. Se l'operatore non possiede stock di quest'azione restituisce 0. 
          * @param operatore è l'operatore del quale si vuole sapere il numero di azioni possedute.
          * @return il numero di azioni possedute dall'operatore.
@@ -322,10 +326,10 @@ public class Borsa implements Comparable<Borsa> {
          * Restituisce la quantità di azioni disponibili. 
          * @return la quantità delle aziende disponibili per l'acquisto. 
          */
-        public int quantita() {
+        public int quantitaDisponibile() {
             int azioniVendute = 0;
             for (Operatore o: operatoriBorsa) {
-                if (o.possiedeAzione(this)) azioniVendute += o.mostraQuantitaAzione(azienda);
+                if (o.possiedeAzione(this)) azioniVendute += o.numeroAzioni(this);
             } 
             return quantita-azioniVendute;
         }

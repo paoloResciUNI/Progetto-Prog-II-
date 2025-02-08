@@ -118,14 +118,14 @@ public class PoliticaPrezzoClient {
                 azienda = a.azienda();
               }
             if (azienda != null) 
-              operatore.investi(nuovaBorsa, azienda, prezzoTotale);
+              nuovaBorsa.acquisto(operatore, azienda, prezzoTotale);
           } else if (operazione.equals("s")) {
             int numeroAzioni = Integer.parseInt(dati[2]);
             Iterator<Borsa.Azione> azioniBorsa = nuovaBorsa.azioniQuotate();
             while (azioniBorsa.hasNext()) {
               Borsa.Azione a = azioniBorsa.next();
               if (a.azienda().nome().equals(nomeAzienda) && operatore.possiedeAzione(a)) {
-                operatore.vendi(nuovaBorsa, a, numeroAzioni);
+                nuovaBorsa.vendita(operatore, a, numeroAzioni);
               }
             }
         }
