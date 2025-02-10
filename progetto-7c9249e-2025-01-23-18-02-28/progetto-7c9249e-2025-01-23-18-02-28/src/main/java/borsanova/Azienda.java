@@ -7,55 +7,60 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * L'azinda può emettere le azioni quotandosi in borsa. 
+ * L'azienda può generare delle azioni quotandosi in borsa. 
+ * 
+ * Ogni azienda:
+ *  - ha un nome che la identifica 
+ *  - tiene traccia delle borse nel quale è quotata attraverso un'insieme contenente tali borse.
+ * 
+ * L'azienda può:
+ *  - quotarsi in una borsa. 
+ *  - restituire il suo nome e le borse nel quale è quotata.   
  */
 public class Azienda implements Comparable<Azienda> {
     /**{@code ISTANZE} tiene traccia dei nomi usati per definire le aziende. */
     private static final SortedSet<String> ISTANZE = new TreeSet<>();
     /**{@code nome} è il nome dell'azienda. */
     private final String nome;
-    /**{@code borseQuotare} è una lista che contiene tutte le borse nel quale l'azienda si è quotata. */
-    private final SortedSet<Borsa> borseInvestitrici;
+    /**{@code borseQuotate} contiene tutte le borse nel quale l'azienda si è quotata. */
+    private final SortedSet<Borsa> borseQuotate;
 
     /*-
      * AF:
      *      - nome: è il nome che identifica l'azienda.
-     *      - borseInvestitrici: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
+     *      - borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
      * RI:
      *      - nome != null && !nome.isBlank().
-     *      - borseInvestitrici != null && b != null per ogni b in borseInvestitrici. 
+     *      - borseQuotate != null && b != null per ogni b in borseQuotate. 
      */
 
     /**
-     * Questo è il metodo di fabbricazione per la classe {@code Azienda}
-     * @param name è il nome dell'azienda da aggiungere all'elenco dei nomi usati. 
+     * Fabbricatore dell'azienda.
+     * @param nome è il nome dell'azienda da aggiungere all'elenco dei nomi usati. 
      * @return un nuovo oggetto di tipo {@code Azienda}. 
      * @throws IllegalArgumentException se {@code name} è null o se è già presente in {@code ISTANZA}.
      */
-    public static Azienda of(final String name) {
-        if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
+    public static Azienda of(final String nome) {
+        if (Objects.requireNonNull(nome, "Name must not be null.").isBlank())
             throw new IllegalArgumentException("Name must not be empty.");
-        if (ISTANZE.contains(name))
+        if (ISTANZE.contains(nome))
             throw new IllegalArgumentException("Name already used.");
-        ISTANZE.add(name);
-        return new Azienda(name);
+        ISTANZE.add(nome);
+        return new Azienda(nome);
     }
 
     /**
-     * Questa classe assegna un nome all'azienda e istanzia {@code borseInvestitrici}.
-     * 
+     * Costruisce una nuova istanza di azienda. 
      * @param nome è il nome che avrà l'azienda.
      */
     private Azienda(String nome) {
         this.nome = nome;
-        borseInvestitrici = new TreeSet<>();
+        borseQuotate = new TreeSet<>();
     }
 
     /**
      * Quota questa azienda in una borsa.
-     * L'azienda viene quotata se il numero delle azioni e il loro valore è maggiore di zero. 
-     * Un'azienda si può quotare al più una volta nella stessa borsa.  
-     * 
+     * L'azienda viene quotata se il numero delle azioni e il loro valore è maggiore di zero o se non è già stata quotata nella borsa.      * 
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
@@ -65,26 +70,26 @@ public class Azienda implements Comparable<Azienda> {
     public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException, NullPointerException {
         Objects.requireNonNull(borsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
-        if (borseInvestitrici.add(borsa)) {
+        if (borseQuotate.add(borsa)) {
             try {
                 borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
             } catch (IllegalArgumentException e) {
-                borseInvestitrici.remove(borsa);
+                borseQuotate.remove(borsa);
             }
         } else throw new IllegalArgumentException("Quest'azienda è già quota nella borsa specficata!");
     }
     
     /**
-     * Restituisce un iteratore per delle borse nel quale questa azienda è quotata.
+     * Restituisce un iteratore per le borse nel quale questa azienda è quotata.
      * @return un iteratore per le borse quotate in questa azienda.
      */
-    public Iterator<Borsa> borseInvestitrici() {
-        return Collections.unmodifiableCollection(borseInvestitrici).iterator();
+    public Iterator<Borsa> borseQuotate() {
+        return Collections.unmodifiableCollection(borseQuotate).iterator();
     }
 
     /**
-     * Restituisce il nome dell'azienda.
-     * @return il nome dell'azienda.
+     * Restituisce il nome di questa azienda.
+     * @return il nome di questa azienda.
      */
     public String nome() {
         return nome;

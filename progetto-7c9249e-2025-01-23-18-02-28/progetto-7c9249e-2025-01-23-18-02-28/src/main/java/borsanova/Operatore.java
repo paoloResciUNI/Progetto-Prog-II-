@@ -12,9 +12,21 @@ import java.util.TreeSet;
 import borsanova.Borsa.Azione;
 
 /**
- * L'operatore può comprare e vendere azioni delle aziende quotate in bora, in base al budget che possiede.
- * Il budget non può essere negativo. 
- * L'operatore tiene traccia delle azioni che possiede. 
+ * L'operatore può comprare e vendere azioni delle aziende quotate in una determinata borsa, in base al budget che possiede o alla quantità di azioni che vuole vendere.
+ * 
+ * Ogni operatore: 
+ *  - è identificato da un nome. 
+ *  - ha un budget che gli permette di comprare azioni nelle varie borse.
+ *  - sa quali azioni possiede e quante ne ha.
+ * 
+ * L'operatore può restituire:
+ *  - il nome che lo identifica.
+ *  - il budget che ha in un determinato momento.
+ *  - se possiede o non possiede una determinata azione.
+ *  - se possiede una determinata azione, il quantitativo posseduto. 
+ *  - l'elenco delle azioni che possiede in un determinato momento. 
+ * 
+ * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per, aggiungere denaro o toglierlo.  
  */
 public class Operatore implements Comparable<Operatore> {
 
@@ -31,13 +43,13 @@ public class Operatore implements Comparable<Operatore> {
     /*-
      * AF: 
      *    - nome: è il nome che identifica l'operatore. 
-     *    - budget: è il budget che ogni operatore può usare per fare acquisti, inizialmente uguale a 0.
+     *    - budget: è il budget che ogni operatore può usare per fare acquisti.
      *    - azioniPossedute: contiene tutte le azioni posseduta da questo operatore. Ogni azione è associata alla quantità posseduta dall'operatore in un determinato momento.
      * RI:
      *    - nome != null && !nome.isBlank().
      *    - budget >= 0.
      *    - k != null per ogni k all'interno di azioniPossedute.keySet().
-     *    - v > 0 per ogni v in azioniPossedute.values().
+     *    - v > 0 && v != null per ogni v in azioniPossedute.values().
      */
 
 
@@ -56,7 +68,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Viene dato un nome all'operatore e gli si da un budget di partenza pari a 0. 
+     * Viene istanziato un nuovo operatore. 
      * @param nomeOperatore nome del nuovo operatore.
      */
     private Operatore(String nomeOperatore) {
@@ -82,19 +94,21 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Restituisce la quantità di stock di una determinata azione possedute dall'operatore.
-     * @param azione l'azione di cui si vuole sapere la quantità di stock posseduti.
-     * @return il numero di azioni della specifica azienda possedute dall'operatore.
-     * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
+     * Restituisce la quantità di una determinata azione possedute da quoesto operatore.
+     * @param azione l'azione di cui si vuole sapere la quantità posseduta.
+     * @return il numero di azioni della specifica azienda possedute da questo operatore.
+     * @throws NoSuchElementException se questo operatore non possiede azioni di questa azienda.
      * @throws NullPointerException se l'azienda è null.
      */
     public int numeroAzioni(Azione azione) throws NoSuchElementException, NullPointerException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
-      return azioniPossedute.getOrDefault(azione, 0);
+      int nAzioni = azioniPossedute.getOrDefault(azione, 0);
+      if (nAzioni > 0) return nAzioni;
+      throw new NoSuchElementException("Questo operatore non possiede l'azione.");
     }
     
     /**
-     * Se l'operatore trova {@code azione} nelle azioni possedute viene restituito un valore booleano {@code true} altrimenti viene restituito {@code false}.
+     * Restituisce, attraverso un valore booleano, se questo operatore trova {@code azione} nelle azioni che possiede.
      * @param azione l'azione da conoscere.
      * @return {@code true} se l'azione è posseduta, {@code false} altrimenti.
      * @throws NullPointerException se l'azione è null.
@@ -122,8 +136,8 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Ritorna il valore totale di tutte le azioni possedute dall'operatore.
-     * @return un intero raprresentante il valore di tutte le azioni possedute, se l'operatore non ne possiede restituisce 0.
+     * Ritorna il valore totale di tutte le azioni possedute da questo operatore.
+     * @return il valore di tutte le azioni possedute.
      */
     public int valoreAzioni() {
       int valoreTotale = 0; 
@@ -134,7 +148,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Restituisce un iteratore alle sole azioni possedute dall'operatore.
+     * Restituisce un iteratore delle azioni possedute da questo operatore.
      * @return l'iteratore alle azioni possedute da questo operatore. 
      */
     public Iterator<Azione> elencoAzioni() {
@@ -154,7 +168,7 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Permette un prelievo di fondi dal budget.
      * @param daPrelevare quantità di denaro da prelevare.
-     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare questa somma o se la somma da prelevare è negativa o ugauale a 0.
+     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare la somma richiesta o se la somma da prelevare è negativa o ugauale a 0.
      */
     public void preleva(int daPrelevare)throws IllegalArgumentException {
       if (daPrelevare > budget || daPrelevare <= 0) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");

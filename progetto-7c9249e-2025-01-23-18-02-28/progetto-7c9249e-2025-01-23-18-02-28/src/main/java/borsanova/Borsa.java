@@ -24,7 +24,7 @@ public class Borsa implements Comparable<Borsa> {
     private static final SortedSet<String> ISTANZE = new TreeSet<>();
     /**{@code nome} è il nome di questa borsa. */
     private final String nome;
-    /**{@code azioniQuotate} è una collezione contente tutte le azioni in questa borsa.*/
+    /**{@code azioniQuotate} contiene tutte le azioni in questa borsa.*/
     private final SortedSet<Azione> azioniQuotate;
     /**{@code operatoriBorsa} Collezione che tiene traccia di tutti gli operatori. */
     private final SortedSet<Operatore> operatoriBorsa;
@@ -34,7 +34,7 @@ public class Borsa implements Comparable<Borsa> {
     /*-
      * AF:
      *    - nome: è il nome che identifica la borsa. 
-     *    - azioniQuotate: l'insieme di tutte le aziende quotate in questa borsa.
+     *    - azioniQuotate: l'insieme di tutte le azioni quotate in questa borsa.
      *    - operatoriBorsa: tiene traccia di tutti gli operatori che operano con questa borsa.
      *    - politicaPrezzo: è la politica che gestisce la variazione del valore delle azioni.
      * RI:
@@ -81,16 +81,14 @@ public class Borsa implements Comparable<Borsa> {
     /**
      * Cambia la politica prezzo della borsa.
      * @param politicaPrezzo la nuova politica prezzo della borsa.
-     * @throws NullPointerException se la politica prezzo è {@code null}. 
      */
     public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) throws NullPointerException {
-        Objects.requireNonNull(politicaPrezzo);
         this.politicaPrezzo = politicaPrezzo;
     }
 
     /**
-     * Mostra la politica di prezzo della borsa.
-     * @return la politica di prezzo della borsa.
+     * Restituisce la politica di prezzo di questa borsa.
+     * @return la politica di prezzo di questa borsa.
      */
     public PoliticaPrezzo politicaPrezzo() {
         return politicaPrezzo;
@@ -117,7 +115,7 @@ public class Borsa implements Comparable<Borsa> {
         if (quantitaAzione <= 0 || valoreAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
         Azione nuovaAzione = new Azione(azienda, valoreAzione, quantitaAzione);
         if (azioniQuotate.contains(nuovaAzione)) throw new IllegalArgumentException("Questa azienda è già quotata in questa borsa!");
-        Iterator<Borsa> borseAzienda = azienda.borseInvestitrici();
+        Iterator<Borsa> borseAzienda = azienda.borseQuotate();
         while (borseAzienda.hasNext()) {
             if (borseAzienda.next().equals(this)) {
                 azioniQuotate.add(nuovaAzione);
@@ -144,7 +142,7 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Un'operatore richiede l'azione che vuole comprare a questa borsa e, se l'azione può essere rilasciata, quest'ultima applica la politica prezzo della alla fine dell'acquisto. 
-     * @param operatore è l'operatore che vuole coprare un'azione da questa 
+     * @param operatore è l'operatore che vuole comprare un'azione da questa borsa.
      * @param azienda è l'azienda del quale l'operatore vule comprare le azioni.
      * @param investimento è l'investimento che l'operatore vuole effettuare. 
      * @throws IllegalArgumentException se l'investimento dell'operatore è: maggiore del suo budget, minore del valore di una singola azione oppure se non ci sono abbastanza azioni da comprare nella borsa. 
@@ -212,40 +210,57 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * Azione associata alla singola azienda. 
+     * L'azione può essere venduta o acquistata da un'operatore all'interno della borsa. 
+     * L'azione può cambiare valore in base alla politica di prezzo della borsa.
+     * 
+     * Ogni azione:
+     *  - è identificata dall'azienda che l'ha emessa.
+     *  - ha un valore per singola azione.
+     *  - sa la quantità di azioni, della stessa azienda, presenti nella borsa. 
+     *  - sa chi la posside e sa la quantità di azioni che ogni proprietario ha. 
+     * 
+     * L'azione può:
+     *  - restituire l'azienda che l'ha emessa.
+     *  - restituire il nome della borsa nel quale si trova. 
+     *  - restituire il suo valore in un determinato momento.
+     *  - restituire la quantità di azioni presenti nella borsa.
+     *  - restituire la quantità di azioni disponibili per essere acquistate.
+     *  - restituire il numero di azioni possedute da un'operatore, se ne possiede.
+     * 
+     * Inoltre il valore dell'azione può essere cambiato in base alla politica prezzo, se presente.
      */
     public class Azione implements Comparable<Azione> {
-        /**{@code azienda} l'azienda a cui è associata questa azione quando l'azienda si è quotata in questa borsa. */
+        /**{@code azienda} l'azienda a cui è associata questa azione quando si è quotata in borsa. */
         private final Azienda azienda;
-        /**{@code valore} è il valore della singola azione. */
+        /**{@code valore} è il valore per ogni singola azione. */
         private int valore;
-        /**{@code quantità} è la quantità di azioni totalmente disponibili. */
+        /**{@code quantita} è la quantità di azioni esistenti. */
         private final int quantita;
-        /**{@code proprietari} è una mappa contenente i proprietari di questa azione associati al nemero di azioni possedute. */
+        /**{@code proprietari} contiene i proprietari di questa azione associati al nemero di azioni possedute da ogni proprietario. */
         private TreeMap<Operatore, Integer> proprietari;
 
         /*-
          * AF:
-         *    - azienda: è il nome dell'azienda al quale è associata l'azione.
+         *    - azienda: è l'azienda al quale è associata l'azione.
          *    - quantita: rappresenta il numero di azioni presenti in questa borsa.  
          *    - valore: rappresenta il valore della singola Azione. 
-         *    - nomeBorsa: è il nome della borsa dove si trova l'azione. 
-         *    - proprietari: è l'insieme degli operatori che possiedono questa azione e del numero di azioni possedute.
+         *    - proprietari: è l'insieme degli operatori che possiedono questa azione e ogni proprietario è associato al numero di azioni che possiede.
          *    
          * RI:  
          *    - azienda != null.
          *    - valore > 0.
          *    - quantità > 0.
          *    - nomeBorsa != null && !nomeBorsa.isBlank().
-         *    - prorpietari != null && proprietiario != null per ogni proprietario in proprietari. 
+         *    - proprietari.keySet() != null && k != null per ogni k in proprietari.keySet().
+         *    - proprietari.values() != null && v != null per ogni v in proprietari.values().   
          */
 
         /**
-         * Crea un'azione associata ad una determinata azienda.
-         * @param nome il nome dell'azienda che emette l'azone.
+         * Costruisce un'azione associata ad una determinata azienda.
+         * @param nome l'azienda che emette l'azone.
          * @param value il valore per singola azione.
-         * @param numeroAzioni il numero di azioni disponibili per l'acquisto.
-         * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono \le 0.
+         * @param numeroAzioni il numero di azioni che l'azienda vuole emettere.
+         * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono minori o uguali a 0.
          * @throws NullPointerException se il nome dell'azienda è {@code null}. 
          */
         private Azione(Azienda nome, int value, int numeroAzioni) throws IllegalArgumentException, NullPointerException {
@@ -258,23 +273,23 @@ public class Borsa implements Comparable<Borsa> {
         }
 
         /**
-         * Restituisce il nome dell'azienda a cui è associata l'azione. 
-         * @return il nome dall'azienda.
+         * Restituisce l'azienda a cui è associata l'azione. 
+         * @return l'azienda.
          */
         public Azienda  azienda() {
             return azienda;
         }
 
         /**
-         * Restituisce il nome di questa borsa.
-         * @return il nome di questa borsa.
+         * Restituisce il nome della borsa nel quale si trova questa azione.
+         * @return il nome della borsa.
          */
         public String nomeBorsa() {
             return nome;
         }
 
         /**
-         * Restituisce il valore per azione delle azioni. 
+         * Restituisce il valore per singola azione. 
          * @return il valore dell'azione. 
          */
         public int valore() {
@@ -288,28 +303,9 @@ public class Borsa implements Comparable<Borsa> {
         public int quantita() {
             return quantita;
         }
-
+        
         /**
-         * Ritorna le azioni possedute da uno specifico operatore. Se l'operatore non possiede stock di quest'azione restituisce 0. 
-         * @param operatore è l'operatore del quale si vuole sapere il numero di azioni possedute.
-         * @return il numero di azioni possedute dall'operatore.
-         */
-        public int azioniDetenute(Operatore operatore) {
-            return proprietari.getOrDefault(operatore, 0);
-        }
-
-        /**
-         * Modifica il valore dell'azione. Il nuovo valore dell'azione non può essere minore o uguale a 0. 
-         * @param nuovoValore il nuovo valore dell'azione.
-         * @throws IllegalArgumentException se il nuovo valore è minore o uguale a 0. 
-         */
-        private void valore(int nuovoValore) {
-            if (nuovoValore <= 0) throw new IllegalArgumentException("Il nuovo valore non può essere minore o uguale a 0");
-            valore = nuovoValore;
-        }
-
-        /**
-         * Restituisce la quantità di azioni disponibili. 
+         * Restituisce la quantità di azioni disponibili per essere acquistate. 
          * @return la quantità delle aziende disponibili per l'acquisto. 
          */
         public int quantitaDisponibile() {
@@ -319,6 +315,29 @@ public class Borsa implements Comparable<Borsa> {
             } 
             return quantita-azioniVendute;
         }
+
+        /**
+         * Restituisce il numero di azioni possedute da uno specifico operatore. Se l'operatore non ne possiede restituisce 0. 
+         * @param operatore è l'operatore del quale si vuole sapere il numero di azioni possedute.
+         * @return il numero di azioni possedute dall'operatore.
+         * @throws NoSuchElementException se l'operatore non possiede questa azionione. 
+         */
+        public int azioniDetenute(Operatore operatore) {
+            int nAzioni = proprietari.getOrDefault(operatore, 0);
+            if (nAzioni > 0) return nAzioni;
+            throw new NoSuchElementException("L'operatore non possiede questa azione.");
+        }
+
+        /**
+         * Modifica il valore dell'azione. 
+         * @param nuovoValore il nuovo valore dell'azione.
+         * @throws IllegalArgumentException se il nuovo valore è minore o uguale a 0.
+         */
+        private void valore(int nuovoValore) {
+            if (nuovoValore <= 0) throw new IllegalArgumentException("Il nuovo valore non può essere minore o uguale a 0");
+            valore = nuovoValore;
+        }
+
 
         @Override
         public int compareTo(Azione o) {
