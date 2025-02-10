@@ -3,9 +3,9 @@ package borsanova.politicaPrezzo;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa classe implementa l'interfaccia {@link PoliticaPrezzo} e definisce la politica del prezzo che gestisce la variazione del valore di un'azione
- * in caso di acquisto della stessa.
- * Questa classe rappresenta la politica del prezzo che prevede un decremento costante del valore di un'azione in caso di vendita.
+ * Questa classe implementa l'interfaccia {@link PoliticaPrezzo}
+ * Definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto della stessa.
+ * Questa politica prezzo prevede un decremento costante del valore di un'azione in caso di vendita.
  */
 public class DecrementoCostante implements PoliticaPrezzo {
     /**{@code decremento} è il valore del decremento costante */

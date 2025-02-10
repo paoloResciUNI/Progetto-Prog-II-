@@ -128,10 +128,12 @@ public class Operatore implements Comparable<Operatore> {
       Iterator<Azione> azioniBorsa = borsa.azioniQuotate();
       while (azioniBorsa.hasNext()) {
         Azione a = azioniBorsa.next();
+       try  {
         int numeroAzioni = a.azioniDetenute(this);
-        if (numeroAzioni > 0 && a.nomeBorsa().equals(borsa.nome())) {
-          azioniPossedute.put(a, numeroAzioni);
-        } else if (numeroAzioni == 0 && azioniPossedute.containsKey(a)) azioniPossedute.remove(a);
+        if (a.nomeBorsa().equals(borsa.nome())) azioniPossedute.put(a, numeroAzioni);
+        } catch (NoSuchElementException e) {
+          azioniPossedute.remove(a);
+        }
       }
     }
 

@@ -3,12 +3,15 @@ package borsanova.politicaPrezzo;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa classe implementa l'interfaccia {@link PoliticaPrezzo} e definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto della stessa.
- * Questa classe rappresenta la politica del prezzo che prevede una variazione costante del valore di un'azione in caso di acquito o vendita.
+ * Questa classe implementa l'interfaccia {@link PoliticaPrezzo}.
+ * Definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto o di vendita della stessa.
+ * Questa politica prezzo prevede:
+ *  - In caso di acquisto, un incremento costante del valore dell'azione.
+ *  - In caso di vandita, un decremento costante del valore dell'azione. 
  */
 public class VariazioneCostante implements PoliticaPrezzo {
     /**{@code variazione} è il valore della variazione costante */
-    private int variazione;
+    private final int variazione;
 
     /*-
      * AF:
@@ -30,7 +33,7 @@ public class VariazioneCostante implements PoliticaPrezzo {
     @Override
     public int vendita(Azione azione, int numeroAzioni) {
         if (azione.valore() - variazione > 0) return (azione.valore() - variazione);
-            else return 1; 
+        else return 1; 
     }
 
     @Override
