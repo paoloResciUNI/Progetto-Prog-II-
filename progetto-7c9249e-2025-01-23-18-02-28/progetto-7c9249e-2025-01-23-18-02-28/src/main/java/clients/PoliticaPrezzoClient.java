@@ -27,8 +27,8 @@ import java.util.Scanner;
 import borsanova.Azienda;
 import borsanova.Borsa;
 import borsanova.Operatore;
-import borsanova.PoliticaPrezzo.DecrementoCostante;
-import borsanova.PoliticaPrezzo.IncrementoCostante;
+import borsanova.politicaPrezzo.DecrementoCostante;
+import borsanova.politicaPrezzo.IncrementoCostante;
 
 /**
  * Client di test per alcune funzionalità relative alle <strong>borse</strong>.

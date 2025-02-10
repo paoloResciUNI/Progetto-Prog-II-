@@ -1,4 +1,4 @@
-package borsanova.PoliticaPrezzo;
+package borsanova.politicaPrezzo;
 
 import borsanova.Borsa.Azione;
 
@@ -9,7 +9,7 @@ import borsanova.Borsa.Azione;
  */
 public class DecrementoCostante implements PoliticaPrezzo {
     /**{@code decremento} è il valore del decremento costante */
-    private int decremento;
+    private final int decremento;
 
     /*-
      * AF:

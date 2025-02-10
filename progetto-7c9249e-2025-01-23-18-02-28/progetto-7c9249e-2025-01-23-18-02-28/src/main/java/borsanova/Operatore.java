@@ -1,6 +1,14 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeMap;
+import java.util.TreeSet;
+
 import borsanova.Borsa.Azione;
 
 /**
@@ -12,11 +20,11 @@ public class Operatore implements Comparable<Operatore> {
 
     /**{@code ISTANZE} tiene traccia di tutti i nomi usati per definire gli operatori.*/ 
      private static final SortedSet<String> ISTANZE = new TreeSet<>();
-    /**{@code nome} è il nome dell'operatore. */
+    /**{@code nome} è il nome che identifica l'operatore. */
      private final String nome; 
     /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
-    /**{@code azioniPossedute} una collezione che contiene tutte le azioni possedute da questo operatore, con associato per ogni azione la sua quantità.*/
+    /**{@code azioniPossedute} una mappa che contiene tutte le azioni possedute da questo operatore, con associato per ogni azione la quantità posseduta.*/
     private final Map<Azione, Integer> azioniPossedute;
     
 
@@ -28,7 +36,7 @@ public class Operatore implements Comparable<Operatore> {
      * RI:
      *    - nome != null && !nome.isBlank().
      *    - budget >= 0.
-     *    - k != null per ogni azione all'interno di azioniPossedute.keySet().
+     *    - k != null per ogni k all'interno di azioniPossedute.keySet().
      *    - v > 0 per ogni v in azioniPossedute.values().
      */
 
@@ -74,7 +82,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Restituisce la quantità di azioni possedute dall'operatore.
+     * Restituisce la quantità di stock di una determinata azione possedute dall'operatore.
      * @param azione l'azione di cui si vuole sapere la quantità di stock posseduti.
      * @return il numero di azioni della specifica azienda possedute dall'operatore.
      * @throws NoSuchElementException se l'operatore non possiede azioni di questa azienda.
@@ -86,20 +94,23 @@ public class Operatore implements Comparable<Operatore> {
     }
     
     /**
-     * Se l'operatore trova {@code azione} nelle azioni possedute viene restituito un valore booleano {@code true} altrimenti {@code false}.
+     * Se l'operatore trova {@code azione} nelle azioni possedute viene restituito un valore booleano {@code true} altrimenti viene restituito {@code false}.
      * @param azione l'azione da conoscere.
      * @return {@code true} se l'azione è posseduta, {@code false} altrimenti.
+     * @throws NullPointerException se l'azione è null.
      */
-    public boolean possiedeAzione(Azione azione) {
+    public boolean possiedeAzione(Azione azione) throws NullPointerException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
       return azioniPossedute.containsKey(azione);
     }
 
     /**
      * Aggiorna l'elenco delle azioni possedute da questo operatore, in una determinata borsa, confrontandosi con la borsa.
-     * @param borsa la borsa con il quale confrontare le azioni possedute. 
+     * @param borsa la borsa con il quale confrontare le azioni possedute.
+     * @throws NullPointerException se la borsa è {@code null}.
      */
-    public void aggiornaAzioni(Borsa borsa) {
+    public void aggiornaAzioni(Borsa borsa) throws NullPointerException {
+      Objects.requireNonNull(borsa, "La borsa non può essere null.");
       Iterator<Azione> azioniBorsa = borsa.azioniQuotate();
       while (azioniBorsa.hasNext()) {
         Azione a = azioniBorsa.next();
@@ -131,7 +142,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Deposito di fondi dentro il budget.
+     * Esegue un deposito di fondi dentro al budget.
      * @param daDepositare la quantità da depositare.
      * @throws IllegalArgumentException se {@code daDepositare} è minore o uguale a 0.
      */
@@ -141,12 +152,12 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Prelievo di fondi dal budget.
+     * Permette un prelievo di fondi dal budget.
      * @param daPrelevare quantità di denaro da prelevare.
-     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare questa somma.
+     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare questa somma o se la somma da prelevare è negativa o ugauale a 0.
      */
     public void preleva(int daPrelevare)throws IllegalArgumentException {
-      if (daPrelevare > budget) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");
+      if (daPrelevare > budget || daPrelevare <= 0) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");
       budget -= daPrelevare;
     }
 

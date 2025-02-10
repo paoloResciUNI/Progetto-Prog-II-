@@ -91,7 +91,7 @@ public class QuotazioneClient {
     } 
     for (Azienda azienda : aziende) {
       System.out.println(azienda.nome());
-      Iterator<Borsa> borseQuotazione = azienda.borseQuotate(); 
+      Iterator<Borsa> borseQuotazione = azienda.borseInvestitrici(); 
       while (borseQuotazione.hasNext()) {
         System.out.println("- " + borseQuotazione.next().nome());
       }

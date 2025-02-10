@@ -1,6 +1,10 @@
 package borsanova;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * L'azinda può emettere le azioni quotandosi in borsa. 
@@ -11,23 +15,22 @@ public class Azienda implements Comparable<Azienda> {
     /**{@code nome} è il nome dell'azienda. */
     private final String nome;
     /**{@code borseQuotare} è una lista che contiene tutte le borse nel quale l'azienda si è quotata. */
-    private final SortedSet<Borsa> borseQuotate;
+    private final SortedSet<Borsa> borseInvestitrici;
 
     /*-
      * AF:
      *      - nome: è il nome che identifica l'azienda.
-     *      - borseQuotate: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
+     *      - borseInvestitrici: è l'insieme contenente tutte le borse nel quale l'azienda è quotata. 
      * RI:
      *      - nome != null && !nome.isBlank().
-     *      - borseQuotate != null && b != null per ogni b in borseQuotate. 
+     *      - borseInvestitrici != null && b != null per ogni b in borseInvestitrici. 
      */
 
     /**
      * Questo è il metodo di fabbricazione per la classe {@code Azienda}
-     * 
      * @param name è il nome dell'azienda da aggiungere all'elenco dei nomi usati. 
      * @return un nuovo oggetto di tipo {@code Azienda}. 
-     * @throws IllegalArgumentException se {@code name}  è null o see è già presente in {@code Nomi_Usati_Aziende}.
+     * @throws IllegalArgumentException se {@code name} è null o se è già presente in {@code ISTANZA}.
      */
     public static Azienda of(final String name) {
         if (Objects.requireNonNull(name, "Name must not be null.").isBlank())
@@ -39,13 +42,13 @@ public class Azienda implements Comparable<Azienda> {
     }
 
     /**
-     * Questa classe assegna un nome all'azienda e istanzia {@code borseQuotate}.
+     * Questa classe assegna un nome all'azienda e istanzia {@code borseInvestitrici}.
      * 
      * @param nome è il nome che avrà l'azienda.
      */
     private Azienda(String nome) {
         this.nome = nome;
-        borseQuotate = new TreeSet<>();
+        borseInvestitrici = new TreeSet<>();
     }
 
     /**
@@ -56,17 +59,17 @@ public class Azienda implements Comparable<Azienda> {
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni} o {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseQuotate}.  
+     * @throws IllegalArgumentException se {@code numeroAzioni} o {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseInvestitrici}.  
      * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
     public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException, NullPointerException {
         Objects.requireNonNull(borsa, "La borsa non può essere null."); 
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
-        if (borseQuotate.add(borsa)) {
+        if (borseInvestitrici.add(borsa)) {
             try {
                 borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
             } catch (IllegalArgumentException e) {
-                borseQuotate.remove(borsa);
+                borseInvestitrici.remove(borsa);
             }
         } else throw new IllegalArgumentException("Quest'azienda è già quota nella borsa specficata!");
     }
@@ -75,8 +78,8 @@ public class Azienda implements Comparable<Azienda> {
      * Restituisce un iteratore per delle borse nel quale questa azienda è quotata.
      * @return un iteratore per le borse quotate in questa azienda.
      */
-    public Iterator<Borsa> borseQuotate() {
-        return Collections.unmodifiableCollection(borseQuotate).iterator();
+    public Iterator<Borsa> borseInvestitrici() {
+        return Collections.unmodifiableCollection(borseInvestitrici).iterator();
     }
 
     /**
@@ -103,17 +106,4 @@ public class Azienda implements Comparable<Azienda> {
     public int compareTo(Azienda altAzienda) {
         return nome.compareTo(altAzienda.nome);
     }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(nome+": ");
-        Iterator<Borsa> borse = borseQuotate.iterator();
-        while (borse.hasNext()) {
-            Borsa b = borse.next();
-            if (borse.hasNext()) sb.append(b.nome() + ", ");
-            else sb.append(b.nome());
-        }
-        return sb.toString();
-    }
-
 }

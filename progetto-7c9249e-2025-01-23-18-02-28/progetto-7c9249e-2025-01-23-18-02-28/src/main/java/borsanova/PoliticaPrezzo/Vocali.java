@@ -1,7 +1,10 @@
-package borsanova.PoliticaPrezzo;
+package borsanova.politicaPrezzo;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import borsanova.Borsa.Azione;
-import java.util.*;
 
 /**
  * Questa classe implementa l'interfaccia {@link PoliticaPrezzo} e definisce la politica del prezzo che gestisce la variazione del valore di un'azione
