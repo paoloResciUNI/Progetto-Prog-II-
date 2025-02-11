@@ -12,7 +12,8 @@ import java.util.TreeSet;
 import borsanova.Borsa.Azione;
 
 /**
- * L'operatore può comprare e vendere azioni delle aziende quotate in una determinata borsa, in base al budget che possiede o alla quantità di azioni che vuole vendere.
+ * L'operatore può comprare e vendere azioni delle aziende quotate in una determinata borsa, 
+ * in base al budget che possiede o alla quantità di azioni che vuole vendere.
  * 
  * Ogni operatore: 
  *  - è identificato da un nome. 
@@ -26,7 +27,8 @@ import borsanova.Borsa.Azione;
  *  - se possiede una determinata azione, il quantitativo posseduto. 
  *  - l'elenco delle azioni che possiede in un determinato momento. 
  * 
- * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per, aggiungere denaro o toglierlo.  
+ * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per aggiungere denaro o toglierlo.  
+ * Il criterio di confronto e ordinamento della classe è il nome.
  */
 public class Operatore implements Comparable<Operatore> {
 
@@ -44,20 +46,22 @@ public class Operatore implements Comparable<Operatore> {
      * AF: 
      *    - nome: è il nome che identifica l'operatore. 
      *    - budget: è il budget che ogni operatore può usare per fare acquisti.
-     *    - azioniPossedute: contiene tutte le azioni posseduta da questo operatore. Ogni azione è associata alla quantità posseduta dall'operatore in un determinato momento.
+     *    - azioniPossedute: contiene tutte le azioni posseduta da questo operatore. 
+     *      Ogni azione è associata alla quantità posseduta dall'operatore in un determinato momento.
      * RI:
      *    - nome != null && !nome.isBlank().
      *    - budget >= 0.
+     *    - azioniPossedute != null.
      *    - k != null per ogni k all'interno di azioniPossedute.keySet().
      *    - v > 0 && v != null per ogni v in azioniPossedute.values().
      */
 
 
     /**
-     * Fabbricatore dell'operatore
+     * Metodo di fabbricazione per creare un'istanza di Operatore.
      * @param name il nome da dare all'operatore.
      * @return un nuovo operatore di nome {@code name}
-     * @throws IllegalArgumentException se {@code name} è vuoto o se il nome è già stato usato da un'altro operatore. 
+     * @throws IllegalArgumentException se {@code name} è vuoto o se il nome è già stato usato. 
      */
     public static Operatore of(final String name) {
       if (Objects.requireNonNull(name, "Il nome non può essere null.").isBlank())
@@ -68,7 +72,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Viene istanziato un nuovo operatore. 
+     * Costruisce una nuova istanza di operatore. 
      * @param nomeOperatore nome del nuovo operatore.
      */
     private Operatore(String nomeOperatore) {
@@ -94,7 +98,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Restituisce la quantità di una determinata azione possedute da quoesto operatore.
+     * Restituisce la quantità di una determinata azione possedute da questo operatore.
      * @param azione l'azione di cui si vuole sapere la quantità posseduta.
      * @return il numero di azioni della specifica azienda possedute da questo operatore.
      * @throws NoSuchElementException se questo operatore non possiede azioni di questa azienda.
@@ -102,7 +106,7 @@ public class Operatore implements Comparable<Operatore> {
      */
     public int numeroAzioni(Azione azione) throws NoSuchElementException, NullPointerException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
-      int nAzioni = azioniPossedute.getOrDefault(azione, 0);
+      int nAzioni = azioniPossedute.get(azione);
       if (nAzioni > 0) return nAzioni;
       throw new NoSuchElementException("Questo operatore non possiede l'azione.");
     }

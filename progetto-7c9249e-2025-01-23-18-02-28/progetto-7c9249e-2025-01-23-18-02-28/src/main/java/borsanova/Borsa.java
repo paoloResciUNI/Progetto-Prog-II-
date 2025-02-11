@@ -31,8 +31,10 @@ import borsanova.politicaPrezzo.PoliticaPrezzo;
  *  - restituire la politica prezzo vigente in un determinato momento.
  *  - cambiare la politica prezzo in ogni momento. 
  *  - quotare un'azienda, nella borsa in questione.
- *  - permettere ad un'operatore di comprare, se possibile, una carta quantità di azioni.
+ *  - permettere ad un'operatore di comprare, se possibile, una certa quantità di azioni.
  *  - permettere ad un'operatore di vendere, se possibile, una certa quantità di azioni.  
+ * 
+ * Il criterio di confronto e ordinamento della classe è il nome.
  */
 public class Borsa implements Comparable<Borsa> {
     /**{@code ISTANZE} è una collezione contenente tutti i nomi usati per nominare le borse. */
@@ -59,10 +61,10 @@ public class Borsa implements Comparable<Borsa> {
      */
 
     /**
-     * Fabbricazione della Borsa
+     * Metodo di fabbricazione per creare un'istanza di Borsa.
      * 
      * @param nome il nome da dare alla nuova borsa creata.
-     * @throws IllegalArgumentException se {@code name} è {@code null} oppure se il nome è già in uso.  
+     * @throws IllegalArgumentException se {@code name} è {@code null} oppure se il nome è già stato usato.  
      * @return la nuova borsa creata. 
      */
     public static Borsa of(final String nome) throws IllegalArgumentException {
@@ -119,7 +121,7 @@ public class Borsa implements Comparable<Borsa> {
      * Cambia la politica prezzo di questa borsa borsa.
      * @param politicaPrezzo la nuova politica prezzo di questa borsa borsa.
      */
-    public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) throws NullPointerException {
+    public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) {
         this.politicaPrezzo = politicaPrezzo;
     }
 
@@ -140,7 +142,7 @@ public class Borsa implements Comparable<Borsa> {
      * @throws NullPointerException se il nome dell'azienda è {@code null}.
      * @throws IllegalArgumentException se la quantità delle azioni o il loro valore è minore o uguale a 0, oppure se l'azienda è già quotata in questa borsa.  
      */
-    void QuotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
+    void quotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
         Objects.requireNonNull(azienda);
         if (quantitaAzione <= 0 || valoreAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
         Azione nuovaAzione = new Azione(azienda, valoreAzione, quantitaAzione);
@@ -157,6 +159,7 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Permette l'acquisto di un determinato numero di azioni da parte di un'operatore. 
+     * In caso l'acquisto rispetti certi criteri veiene applicata, se presente, la politica prezzo.
      * @param operatore è l'operatore che vuole comprare un'azione da questa borsa.
      * @param azienda è l'azienda del quale l'operatore vuole comprare le azioni.
      * @param investimento è il capitale che l'operatore vuole investire. 
@@ -185,6 +188,7 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Permette la vendita di un certo numero di azioni da parte dell'operatore a questa borsa. 
+     * In caso la vendita rispetti carti criteri viene applicata, se presente, la politica prezzo. 
      * @param operatore è l'operatore che vuole vendere un certo quantitativo di azioni.
      * @param azione è l'azione che l'operatore vuole vendere.
      * @param quantita è la quantità di azioni che l'operatore vuole vendere. 
@@ -197,7 +201,8 @@ public class Borsa implements Comparable<Borsa> {
       int azioniAttualmentePossedute = operatore.numeroAzioni(azione);
       if (operatore.possiedeAzione(azione) && azioniAttualmentePossedute < quantita) throw new IllegalArgumentException("L'operatore non ha abbastanza azioni da vendere.");
       int azioniRimanenti = azioniAttualmentePossedute - quantita;
-      azione.proprietari.put(operatore, azioniRimanenti);
+      if (azioniRimanenti <= 0) azione.proprietari.remove(operatore);
+      else azione.proprietari.put(operatore, azioniRimanenti);
       operatore.deposita(quantita*azione.valore());
       if (politicaPrezzo != null) {
         var nuovoValore = politicaPrezzo.vendita(azione, quantita);
@@ -225,7 +230,6 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * L'azione può essere venduta o acquistata da un'operatore all'interno della borsa. 
      * L'azione può cambiare valore in base alla politica di prezzo della borsa.
      * 
      * Ogni azione:
@@ -242,7 +246,6 @@ public class Borsa implements Comparable<Borsa> {
      *  - restituire la quantità di azioni disponibili per essere acquistate.
      *  - restituire il numero di azioni possedute da un'operatore, se ne possiede.
      * 
-     * Inoltre il valore dell'azione può essere cambiato in base alla politica prezzo, se presente.
      */
     public class Azione implements Comparable<Azione> {
         /**{@code azienda} l'azienda a cui è associata questa azione quando si è quotata in borsa. */
@@ -266,6 +269,7 @@ public class Borsa implements Comparable<Borsa> {
          *    - valore > 0.
          *    - quantità > 0.
          *    - nomeBorsa != null && !nomeBorsa.isBlank().
+         *    - proprietari != null.
          *    - proprietari.keySet() != null && k != null per ogni k in proprietari.keySet().
          *    - proprietari.values() != null && v != null per ogni v in proprietari.values().   
          */
@@ -332,7 +336,7 @@ public class Borsa implements Comparable<Borsa> {
         }
 
         /**
-         * Restituisce il numero di azioni possedute da uno specifico operatore. Se l'operatore non ne possiede restituisce 0. 
+         * Restituisce il numero di azioni possedute da uno specifico operatore.
          * @param operatore è l'operatore del quale si vuole sapere il numero di azioni possedute.
          * @return il numero di azioni possedute dall'operatore.
          * @throws NoSuchElementException se l'operatore non possiede questa azionione. 

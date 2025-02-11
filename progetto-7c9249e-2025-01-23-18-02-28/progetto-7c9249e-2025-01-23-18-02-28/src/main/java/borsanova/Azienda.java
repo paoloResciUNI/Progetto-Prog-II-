@@ -7,6 +7,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
+ * 
  * L'azienda può generare delle azioni quotandosi in borsa. 
  * 
  * Ogni azienda:
@@ -16,6 +17,8 @@ import java.util.TreeSet;
  * L'azienda può:
  *  - quotarsi in una borsa. 
  *  - restituire il suo nome e le borse nel quale è quotata.   
+ * 
+ * Il criterio di confronto e ordinamento della classe è il nome.
  */
 public class Azienda implements Comparable<Azienda> {
     /**{@code ISTANZE} tiene traccia dei nomi usati per definire le aziende. */
@@ -35,10 +38,10 @@ public class Azienda implements Comparable<Azienda> {
      */
 
     /**
-     * Fabbricatore dell'azienda.
+     * Metodo di fabbricazione per creare un'istanza di Azienda.
      * @param nome è il nome dell'azienda da aggiungere all'elenco dei nomi usati. 
      * @return un nuovo oggetto di tipo {@code Azienda}. 
-     * @throws IllegalArgumentException se {@code name} è null o se è già presente in {@code ISTANZA}.
+     * @throws IllegalArgumentException se {@code nome} è null o se il nome è già stato usato.
      */
     public static Azienda of(final String nome) {
         if (Objects.requireNonNull(nome, "Name must not be null.").isBlank())
@@ -72,7 +75,7 @@ public class Azienda implements Comparable<Azienda> {
         if (numeroAzioni <= 0 || valorePerAzione <= 0) throw new IllegalArgumentException("Il numero delle azioni e il loro valore deve essere maggiore di zero.");
         if (borseQuotate.add(borsa)) {
             try {
-                borsa.QuotaAzienda(this, valorePerAzione, numeroAzioni);
+                borsa.quotaAzienda(this, valorePerAzione, numeroAzioni);
             } catch (IllegalArgumentException e) {
                 borseQuotate.remove(borsa);
             }
