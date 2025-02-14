@@ -8,12 +8,11 @@ import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
-import borsanova.politicaPrezzo.PoliticaPrezzo;
+import borsanova.politicaprezzo.*;;
 
 
 //Per lo svolgimento del progetto mi sono confrontato con i miei colleghi: Fernando Gavezzotti, Matteo Mascherpa, Alessandro Fascini e Gabriele Fioco. 
  
-
 /**
  * La borsa tiene traccia di tutte le aziende quotate in essa e delle relative azioni. 
  * La borsa tiene traccia di tutti gli operatori che operano su di essa.
@@ -22,7 +21,7 @@ import borsanova.politicaPrezzo.PoliticaPrezzo;
  *  - è identificata da un nome.
  *  - ha un'insieme contenente le azioni di tutte le aizende quotate in essa.
  *  - ha un'insieme di tutti gli operatori che hanno operato con essa. 
- *  - ha una politica prezzo che indica la variazione del prezzo secondo certi criteri in un determinato momento. 
+ *  - ha una politica prezzo che, secondo certi criteri, indica la variazione del prezzo in un determinato momento. 
  * 
  * Ogni borsa può:
  *  - restituire il nome che la identifica. 
@@ -30,11 +29,10 @@ import borsanova.politicaPrezzo.PoliticaPrezzo;
  *  - restituire un iteratore per le azioni presenti in essa.
  *  - restituire la politica prezzo vigente in un determinato momento.
  *  - cambiare la politica prezzo in ogni momento. 
- *  - quotare un'azienda, nella borsa in questione.
  *  - permettere ad un'operatore di comprare, se possibile, una certa quantità di azioni.
  *  - permettere ad un'operatore di vendere, se possibile, una certa quantità di azioni.  
  * 
- * Il criterio di confronto e ordinamento della classe è il nome.
+ * Il criterio di confronto e ordinamento delle borse è il nome.
  */
 public class Borsa implements Comparable<Borsa> {
     /**{@code ISTANZE} è una collezione contenente tutti i nomi usati per nominare le borse. */
@@ -63,15 +61,15 @@ public class Borsa implements Comparable<Borsa> {
     /**
      * Metodo di fabbricazione per creare un'istanza di Borsa.
      * 
-     * @param nome il nome da dare alla nuova borsa creata.
-     * @throws IllegalArgumentException se {@code name} è {@code null} oppure se il nome è già stato usato.  
+     * @param nome il nome da dare alla nuova borsa.
+     * @throws IllegalArgumentException se {@code nome} è {@code null} oppure se il nome è già stato usato.  
      * @return la nuova borsa creata. 
      */
     public static Borsa of(final String nome) throws IllegalArgumentException {
-        if (Objects.requireNonNull(nome, "Name must not be null.").isBlank())
-            throw new IllegalArgumentException("Name must not be empty.");
+        if (Objects.requireNonNull(nome, "Il nome non può essere null.").isBlank())
+            throw new IllegalArgumentException("Il nome non può essere vuoto.");
         if (ISTANZE.contains(nome))
-            throw new IllegalArgumentException("Name already used.");
+            throw new IllegalArgumentException("Nome già usato.");
         ISTANZE.add(nome);
         return new Borsa(nome);
     }
@@ -95,11 +93,11 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * Cerca l'azione relativa un'azienda quotata in questa borsa.
+     * Cerca l'azione relativa ad un'azienda quotata in questa borsa.
      * @param azienda l'azienda di cui si vuole prendere l'azione. 
-     * @return l'azione relativa all'azienda cercata che si è quotata in questa borsa.
-     * @throws NoSuchElementException se l'azienda cerca non è quotata in questa borsa. 
-     * @throws NullPointerException se il nome dell'azienda è {@code null}.
+     * @return l'azione relativa all'azienda cercata.
+     * @throws NoSuchElementException se l'azienda cercata non è quotata in questa borsa. 
+     * @throws NullPointerException se l'azienda è {@code null}.
      */
     public Azione cercaAzioneBorsa(Azienda azienda) throws NoSuchElementException {
         Objects.requireNonNull(azienda);
@@ -110,16 +108,16 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * Restituisce un iteratore per le azioni quotate in questa borsa. 
-     * @return un iteratore per le azioni quotate in questa borsa. 
+     * Restituisce un'iteratore per le azioni quotate in questa borsa. 
+     * @return un'iteratore per le azioni quotate in questa borsa. 
      */
     public Iterator<Azione> azioniQuotate() {
         return Collections.unmodifiableCollection(azioniQuotate).iterator();
     }
 
     /**
-     * Cambia la politica prezzo di questa borsa borsa.
-     * @param politicaPrezzo la nuova politica prezzo di questa borsa borsa.
+     * Cambia la politica prezzo di questa borsa.
+     * @param politicaPrezzo la nuova politica prezzo di questa borsa.
      */
     public void politicaPrezzo(PoliticaPrezzo politicaPrezzo) {
         this.politicaPrezzo = politicaPrezzo;
@@ -136,10 +134,10 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Quota un'azione in questa borsa. 
-     * @param azienda è l'azienda che si sta quotando in questa borsa.
-     * @param valoreAzione valore per azione dell'azienda.
-     * @param quantitaAzione quantità di azioni che l'azienda mette a disposizione.
-     * @throws NullPointerException se il nome dell'azienda è {@code null}.
+     * @param azienda è l'azienda che si sta quotando.
+     * @param valoreAzione è il valore che avrà ogni singola azione.
+     * @param quantitaAzione è la quantità di azioni che sarà presente in questa borsa.
+     * @throws NullPointerException se l'azienda è {@code null}.
      * @throws IllegalArgumentException se la quantità delle azioni o il loro valore è minore o uguale a 0, oppure se l'azienda è già quotata in questa borsa.  
      */
     void quotaAzienda(Azienda azienda, int valoreAzione, int quantitaAzione) throws NullPointerException {
@@ -159,8 +157,8 @@ public class Borsa implements Comparable<Borsa> {
 
     /**
      * Permette l'acquisto di un determinato numero di azioni da parte di un'operatore. 
-     * In caso l'acquisto rispetti certi criteri veiene applicata, se presente, la politica prezzo.
-     * @param operatore è l'operatore che vuole comprare un'azione da questa borsa.
+     * In caso l'acquisto rispetti certi criteri, definiti dalla politica prezzo, allora, se presente, veiene applicata la politica prezzo.
+     * @param operatore è l'operatore che vuole comprare un certo numero di azioni in questa borsa.
      * @param azienda è l'azienda del quale l'operatore vuole comprare le azioni.
      * @param investimento è il capitale che l'operatore vuole investire. 
      * @throws IllegalArgumentException se l'investimento dell'operatore è: maggiore del suo budget, minore del valore di una singola azione oppure se non ci sono abbastanza azioni da comprare nella borsa. 
@@ -187,9 +185,9 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * Permette la vendita di un certo numero di azioni da parte dell'operatore a questa borsa. 
-     * In caso la vendita rispetti carti criteri viene applicata, se presente, la politica prezzo. 
-     * @param operatore è l'operatore che vuole vendere un certo quantitativo di azioni.
+     * Permette la vendita di un certo numero di azioni da parte dell'operatore. 
+     * In caso la vendita rispetti certi criteri definiti dalla politica prezzo, allora, se presente, veiene applicata la politica prezzo. 
+     * @param operatore è l'operatore che vuole vendere un certo numero di azioni in suo possesso.
      * @param azione è l'azione che l'operatore vuole vendere.
      * @param quantita è la quantità di azioni che l'operatore vuole vendere. 
      * @throws NullPointerException se l'azione o l'operatore è {@code null}.
@@ -230,12 +228,13 @@ public class Borsa implements Comparable<Borsa> {
     }
 
     /**
-     * L'azione può cambiare valore in base alla politica di prezzo della borsa.
+     * L'azione viene creata nel momento in cui un'azienda si quota in borsa. 
      * 
      * Ogni azione:
      *  - è identificata dall'azienda che l'ha emessa.
-     *  - ha un valore per singola azione.
-     *  - sa la quantità di azioni, della stessa azienda, presenti nella borsa. 
+     *  - sa in quale borsa si trova.
+     *  - sa il proprio valore per singola azione.
+     *  - sa la quantità di azioni, della stessa azienda, presentr nella borsa. 
      *  - sa chi la posside e sa la quantità di azioni che ogni proprietario ha. 
      * 
      * L'azione può:
@@ -244,11 +243,11 @@ public class Borsa implements Comparable<Borsa> {
      *  - restituire il suo valore in un determinato momento.
      *  - restituire la quantità di azioni presenti nella borsa.
      *  - restituire la quantità di azioni disponibili per essere acquistate.
-     *  - restituire il numero di azioni possedute da un'operatore, se ne possiede.
+     *  - restituire il numero di azioni possedute da un determinato operatore, se esso ne possiede.
      * 
      */
     public class Azione implements Comparable<Azione> {
-        /**{@code azienda} l'azienda a cui è associata questa azione quando si è quotata in borsa. */
+        /**{@code azienda} l'azienda a cui è associata questa azione. */
         private final Azienda azienda;
         /**{@code valore} è il valore per ogni singola azione. */
         private int valore;
@@ -278,7 +277,7 @@ public class Borsa implements Comparable<Borsa> {
          * Costruisce un'azione associata ad una determinata azienda.
          * @param nome l'azienda che emette l'azone.
          * @param value il valore per singola azione.
-         * @param numeroAzioni il numero di azioni che l'azienda vuole emettere.
+         * @param numeroAzioni il numero di azioni all'interno della borsa.
          * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono minori o uguali a 0.
          * @throws NullPointerException se il nome dell'azienda è {@code null}. 
          */

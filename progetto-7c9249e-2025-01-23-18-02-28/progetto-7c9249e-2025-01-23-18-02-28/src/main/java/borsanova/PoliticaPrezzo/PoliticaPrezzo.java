@@ -1,9 +1,10 @@
-package borsanova.politicaPrezzo;
+package borsanova.politicaprezzo;
 
 import borsanova.Borsa.Azione;
 
 /**
  * Applica, seguendo certi criteri, la politica del prezzo che gestisce la variazione del valore di un'azione in caso di vendita o di acquisto della stessa.
+ * Le classi che implementano la politica prezzo devono sovrascrivere i metodi {@code vendita} e {@code acquisto}.
  */
 public interface PoliticaPrezzo {
     /**

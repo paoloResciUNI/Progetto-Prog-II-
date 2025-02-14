@@ -1,4 +1,4 @@
-package borsanova.politicaPrezzo;
+package borsanova.politicaprezzo;
 
 import borsanova.Borsa.Azione;
 

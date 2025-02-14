@@ -17,18 +17,18 @@ import borsanova.Borsa.Azione;
  * 
  * Ogni operatore: 
  *  - è identificato da un nome. 
- *  - ha un budget che gli permette di comprare azioni nelle varie borse.
- *  - sa quali azioni possiede e quante ne ha.
+ *  - dspone di un budget che gli permette di comprare azioni nelle varie borse.
+ *  - sa quali azioni possiede e in quale quantità.
  * 
  * L'operatore può restituire:
  *  - il nome che lo identifica.
- *  - il budget che ha in un determinato momento.
- *  - se possiede o non possiede una determinata azione.
- *  - se possiede una determinata azione, il quantitativo posseduto. 
- *  - l'elenco delle azioni che possiede in un determinato momento. 
+ *  - il budget che possiede in un determinato momento.
+ *  - se possiede o meno una determinata azione.
+ *  - la quantità di azioni, se ne è in possesso. 
+ *  - l'elenco delle azioni detenute in un determinato momento. 
  * 
- * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per aggiungere denaro o toglierlo.  
- * Il criterio di confronto e ordinamento della classe è il nome.
+ * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per aggiungere o sottrarre denaro.  
+ * Il criterio di confronto e ordinamento degli operatori è il nome.
  */
 public class Operatore implements Comparable<Operatore> {
 
@@ -59,16 +59,16 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * Metodo di fabbricazione per creare un'istanza di Operatore.
-     * @param name il nome da dare all'operatore.
-     * @return un nuovo operatore di nome {@code name}
-     * @throws IllegalArgumentException se {@code name} è vuoto o se il nome è già stato usato. 
+     * @param nome il nome da dare all'operatore.
+     * @return un nuovo operatore di nome {@code nome}
+     * @throws IllegalArgumentException se {@code nome} è vuoto o se il nome è già stato usato. 
      */
-    public static Operatore of(final String name) {
-      if (Objects.requireNonNull(name, "Il nome non può essere null.").isBlank())
+    public static Operatore of(final String nome) {
+      if (Objects.requireNonNull(nome, "Il nome non può essere null.").isBlank())
         throw new IllegalArgumentException("Il nome non può essere vuoto.");
-      if (ISTANZE.contains(name)) throw new IllegalArgumentException("Nome già usato.");
-      ISTANZE.add(name);
-      return new Operatore(name);
+      if (ISTANZE.contains(nome)) throw new IllegalArgumentException("Nome già usato.");
+      ISTANZE.add(nome);
+      return new Operatore(nome);
     }
 
     /**
@@ -100,7 +100,7 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Restituisce la quantità di una determinata azione possedute da questo operatore.
      * @param azione l'azione di cui si vuole sapere la quantità posseduta.
-     * @return il numero di azioni della specifica azienda possedute da questo operatore.
+     * @return il numero di azioni, della specifica azienda, possedute da questo operatore.
      * @throws NoSuchElementException se questo operatore non possiede azioni di questa azienda.
      * @throws NullPointerException se l'azienda è null.
      */
@@ -123,11 +123,13 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Aggiorna l'elenco delle azioni possedute da questo operatore, in una determinata borsa, confrontandosi con la borsa.
+     * Aggiorna l'elenco delle azioni, presenti in una determinata borsa, che questo operatore possiede confrontandosi con la borsa.
+     * Più precisamnte, per ogni azione presente nella borsa viene controllata la mappa dei proprietari, se nella mappa compare questo operatore viene aggiunta l'azione nella mappa delle azioni possedute con 
+     * il relativo quantitativo. 
      * @param borsa la borsa con il quale confrontare le azioni possedute.
      * @throws NullPointerException se la borsa è {@code null}.
      */
-    public void aggiornaAzioni(Borsa borsa) throws NullPointerException {
+     void aggiornaAzioni(Borsa borsa) throws NullPointerException {
       Objects.requireNonNull(borsa, "La borsa non può essere null.");
       Iterator<Azione> azioniBorsa = borsa.azioniQuotate();
       while (azioniBorsa.hasNext()) {
@@ -142,7 +144,7 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Ritorna il valore totale di tutte le azioni possedute da questo operatore.
+     * Restituisce il valore totale di tutte le azioni che questo operatore possiede.
      * @return il valore di tutte le azioni possedute.
      */
     public int valoreAzioni() {
@@ -174,7 +176,7 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Permette un prelievo di fondi dal budget.
      * @param daPrelevare quantità di denaro da prelevare.
-     * @throws IllegalArgumentException se l'operatore non ha abbastanza soldi per prelevare la somma richiesta o se la somma da prelevare è negativa o ugauale a 0.
+     * @throws IllegalArgumentException se l'operatore non ha abbastanza denaro per prelevare la somma richiesta o se la somma da prelevare è negativa o ugauale a 0.
      */
     public void preleva(int daPrelevare)throws IllegalArgumentException {
       if (daPrelevare > budget || daPrelevare <= 0) throw new IllegalArgumentException("Non hai abbastanza soldi per prelevare questa somma.");

@@ -27,7 +27,7 @@ import java.util.Scanner;
 import borsanova.Azienda;
 import borsanova.Borsa;
 import borsanova.Operatore;
-import borsanova.politicaPrezzo.Vocali;
+import borsanova.politicaprezzo.Vocali;
 
 /** Client di test per alcune funzionalità relative alle <strong>borse</strong>. */
 public class PoliticaPrezzoVocaliClient {

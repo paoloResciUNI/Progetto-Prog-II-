@@ -1,4 +1,4 @@
-package borsanova.politicaPrezzo;
+package borsanova.politicaprezzo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,10 +7,11 @@ import java.util.Set;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa classe implementa l'interfaccia {@link PoliticaPrezzo} e definisce la politica del prezzo che gestisce la variazione del valore di un'azione
- * in caso di acquisto o vendita della stessa.
- * Questa classe rappresenta la politica del prezzo che prevede un raddopiamento valore dell'azione ad ogni acquisto e il suo dimezzamento ad ogni vendita in caso il nome dell'azienda dell'azione 
- * o il nome della nomeBorsa dove risiede l'azione inizini per il carattere {@code lettera} o per vocale.
+ * Questa classe implementa l'interfaccia {@link PoliticaPrezzo}.
+ * Definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto o di vendita della stessa.
+ * Questa politica del prezzo prevede:
+ *  - In caso di vendita, se l'iniziale del nome dell'azienda o l'iniziale del nome della borsa è il carattere {@code lettera} o una vocale, il valore dell'azione viene dimezzato.
+ *  - In caso di acquisto, se l'iniziale del nome dell'azienda o l'iniziale del nome della borsa è il carattere {@code lettera} o una vocale, il valore dell'azione viene raddoppiato.   
  */
 public class Vocali implements PoliticaPrezzo {
     /**{@code lettera} è il carattere che determina la politica di prezzo della nomeBorsa */

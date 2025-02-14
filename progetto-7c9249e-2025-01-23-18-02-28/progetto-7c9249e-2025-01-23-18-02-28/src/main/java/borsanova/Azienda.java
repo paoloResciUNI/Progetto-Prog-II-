@@ -18,7 +18,7 @@ import java.util.TreeSet;
  *  - quotarsi in una borsa. 
  *  - restituire il suo nome e le borse nel quale è quotata.   
  * 
- * Il criterio di confronto e ordinamento della classe è il nome.
+ * Il criterio di confronto e ordinamento delle aziende è il nome.
  */
 public class Azienda implements Comparable<Azienda> {
     /**{@code ISTANZE} tiene traccia dei nomi usati per definire le aziende. */
@@ -39,7 +39,7 @@ public class Azienda implements Comparable<Azienda> {
 
     /**
      * Metodo di fabbricazione per creare un'istanza di Azienda.
-     * @param nome è il nome dell'azienda da aggiungere all'elenco dei nomi usati. 
+     * @param nome è il nome della nuova azienda. 
      * @return un nuovo oggetto di tipo {@code Azienda}. 
      * @throws IllegalArgumentException se {@code nome} è null o se il nome è già stato usato.
      */
@@ -67,7 +67,7 @@ public class Azienda implements Comparable<Azienda> {
      * @param borsa indica la borsa nel quale l'azienda si vuole quotare.
      * @param numeroAzioni il numero di azioni che l'azienda vuole vendere.
      * @param valorePerAzione il valore per singola azione.
-     * @throws IllegalArgumentException se {@code numeroAzioni} o {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseInvestitrici}.  
+     * @throws IllegalArgumentException se {@code numeroAzioni} o {@code valorePerAzione} è minore o uguale a 0, oppure se {@code borsa} è già all'interno di {@code borseQuotate}.  
      * @throws NullPointerException se {@code borsa} è {@code null}. 
      */
     public void quotazioneInBorsa(Borsa borsa, int numeroAzioni, int valorePerAzione) throws IllegalArgumentException, NullPointerException {
