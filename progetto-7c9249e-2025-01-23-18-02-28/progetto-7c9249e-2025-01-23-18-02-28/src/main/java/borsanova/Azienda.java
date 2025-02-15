@@ -7,7 +7,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 /**
- * 
  * L'azienda può generare delle azioni quotandosi in borsa. 
  * 
  * Ogni azienda:
@@ -44,17 +43,17 @@ public class Azienda implements Comparable<Azienda> {
      * @throws IllegalArgumentException se {@code nome} è null o se il nome è già stato usato.
      */
     public static Azienda of(final String nome) {
-        if (Objects.requireNonNull(nome, "Name must not be null.").isBlank())
-            throw new IllegalArgumentException("Name must not be empty.");
+        if (Objects.requireNonNull(nome, "Il nome non può essere null.").isBlank())
+            throw new IllegalArgumentException("Il nome non può essere vuoto.");
         if (ISTANZE.contains(nome))
-            throw new IllegalArgumentException("Name already used.");
+            throw new IllegalArgumentException("Nome già usato.");
         ISTANZE.add(nome);
         return new Azienda(nome);
     }
 
     /**
      * Costruisce una nuova istanza di azienda. 
-     * @param nome è il nome che avrà l'azienda.
+     * @param nome è il nome che identificherà l'azienda.
      */
     private Azienda(String nome) {
         this.nome = nome;
@@ -105,13 +104,14 @@ public class Azienda implements Comparable<Azienda> {
 
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof Azienda))
-            return false;
-        return nome.equals(obj.toString());
+        if (obj instanceof Azienda other)
+            return nome.equals(other.nome());
+        else 
+        return false;
     }
 
     @Override
-    public int compareTo(Azienda altAzienda) {
-        return nome.compareTo(altAzienda.nome);
+    public int compareTo(Azienda altraAzienda) {
+        return nome.compareTo(altraAzienda.nome);
     }
 }

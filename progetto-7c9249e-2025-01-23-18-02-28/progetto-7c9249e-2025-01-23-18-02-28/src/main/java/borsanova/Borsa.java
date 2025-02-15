@@ -14,8 +14,9 @@ import borsanova.politicaprezzo.*;;
 //Per lo svolgimento del progetto mi sono confrontato con i miei colleghi: Fernando Gavezzotti, Matteo Mascherpa, Alessandro Fascini e Gabriele Fioco. 
  
 /**
- * La borsa tiene traccia di tutte le aziende quotate in essa e delle relative azioni. 
+ * La borsa tiene traccia di tutte le azioni presenti in essa. 
  * La borsa tiene traccia di tutti gli operatori che operano su di essa.
+ * La borsa permette la vendita o l'acquisto di azioni da parte degli operatori.
  * 
  * Ogni borsa: 
  *  - è identificata da un nome.
@@ -35,9 +36,9 @@ import borsanova.politicaprezzo.*;;
  * Il criterio di confronto e ordinamento delle borse è il nome.
  */
 public class Borsa implements Comparable<Borsa> {
-    /**{@code ISTANZE} è una collezione contenente tutti i nomi usati per nominare le borse. */
+    /**{@code ISTANZE} una collezione contenente tutti i nomi usati per nominare le borse. */
     private static final SortedSet<String> ISTANZE = new TreeSet<>();
-    /**{@code nome} è il nome che identifica questa borsa. */
+    /**{@code nome} il nome che identifica questa borsa. */
     private final String nome;
     /**{@code azioniQuotate} contiene tutte le azioni quotate in questa borsa.*/
     private final SortedSet<Azione> azioniQuotate;
@@ -234,7 +235,7 @@ public class Borsa implements Comparable<Borsa> {
      *  - è identificata dall'azienda che l'ha emessa.
      *  - sa in quale borsa si trova.
      *  - sa il proprio valore per singola azione.
-     *  - sa la quantità di azioni, della stessa azienda, presentr nella borsa. 
+     *  - sa la quantità di azioni, della stessa azienda, presente nella borsa. 
      *  - sa chi la posside e sa la quantità di azioni che ogni proprietario ha. 
      * 
      * L'azione può:
@@ -249,11 +250,11 @@ public class Borsa implements Comparable<Borsa> {
     public class Azione implements Comparable<Azione> {
         /**{@code azienda} l'azienda a cui è associata questa azione. */
         private final Azienda azienda;
-        /**{@code valore} è il valore per ogni singola azione. */
+        /**{@code valore} il valore per ogni singola azione. */
         private int valore;
-        /**{@code quantita} è la quantità di azioni esistenti. */
+        /**{@code quantita} la quantità di azioni esistenti. */
         private final int quantita;
-        /**{@code proprietari} contiene i proprietari di questa azione associati al nemero di azioni possedute da ogni proprietario. */
+        /**{@code proprietari} contiene i proprietari di questa azione associati al numero di azioni possedute da ogni proprietario. */
         private TreeMap<Operatore, Integer> proprietari;
 
         /*-
@@ -279,7 +280,7 @@ public class Borsa implements Comparable<Borsa> {
          * @param value il valore per singola azione.
          * @param numeroAzioni il numero di azioni all'interno della borsa.
          * @throws IllegalArgumentException se il numero di azioni o il valore per singola azione sono minori o uguali a 0.
-         * @throws NullPointerException se il nome dell'azienda è {@code null}. 
+         * @throws NullPointerException se l'azienda è {@code null}. 
          */
         private Azione(Azienda nome, int value, int numeroAzioni) throws IllegalArgumentException, NullPointerException {
             Objects.nonNull(nome);

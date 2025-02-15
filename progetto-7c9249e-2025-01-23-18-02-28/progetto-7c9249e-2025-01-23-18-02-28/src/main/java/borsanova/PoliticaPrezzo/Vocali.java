@@ -14,24 +14,24 @@ import borsanova.Borsa.Azione;
  *  - In caso di acquisto, se l'iniziale del nome dell'azienda o l'iniziale del nome della borsa è il carattere {@code lettera} o una vocale, il valore dell'azione viene raddoppiato.   
  */
 public class Vocali implements PoliticaPrezzo {
-    /**{@code lettera} è il carattere che determina la politica di prezzo della nomeBorsa */
+    /**{@code lettera} il carattere che determina il cambiamento del valore dell'azione. */
     private char lettera;
-    /**{@code vocali} è l'insieme delle vocali minuscole */
+    /**{@code vocali} l'insieme delle vocali minuscole */
     private static final Set<Character> vocali = new HashSet<>(Arrays.asList('a', 'e', 'i', 'o', 'u'));
-    /**{@code Vocali} è l'insieme delle vocali maiuscole */
+    /**{@code Vocali} l'insieme delle vocali maiuscole */
     private static final Set<Character> Vocali = new HashSet<>(Arrays.asList('A', 'E', 'I', 'O', 'U'));
 
     /*-
      * AF: 
-     *     - L'azione viene coinvolta nella politica di prezzo se la prima lettera del nome dell'azienda o della nomeBorsa iniziano per il carattere lettera o per vocale.
+     *     - lettera: è il carattere che può coinvolgere l'azione nel dimezzamenro del suo valore in caso di vendita o nel raddopiamento in caso di acquisto.
      * IR:
      *     - lettera != null.
-     *     - A <= lettera <= Z && a <= lettera <= z.
+     *     - A <= lettera <= Z || a <= lettera <= z.
      */
 
     /**
-     * Definizione della politica di prezzo.
-     * @param lettera carattere che determina quali azioni saranno coinvolte nella politica di prezzo della nomeBorsa
+     * Definizione della lettera.
+     * @param lettera carattere che può determinare il cambiamento del valore dell'azione.  
      * @throws IllegalArgumentException se {@code lettera} non è un carattere dell'alfabeto inglese.
      */
     public Vocali(char lettera) {

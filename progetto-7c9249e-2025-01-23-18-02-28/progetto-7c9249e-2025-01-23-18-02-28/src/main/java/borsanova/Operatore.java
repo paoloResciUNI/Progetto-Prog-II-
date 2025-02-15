@@ -12,8 +12,7 @@ import java.util.TreeSet;
 import borsanova.Borsa.Azione;
 
 /**
- * L'operatore può comprare e vendere azioni delle aziende quotate in una determinata borsa, 
- * in base al budget che possiede o alla quantità di azioni che vuole vendere.
+ * L'operatore tiene traccia delle azioni che possiede. 
  * 
  * Ogni operatore: 
  *  - è identificato da un nome. 
@@ -24,7 +23,7 @@ import borsanova.Borsa.Azione;
  *  - il nome che lo identifica.
  *  - il budget che possiede in un determinato momento.
  *  - se possiede o meno una determinata azione.
- *  - la quantità di azioni, se ne è in possesso. 
+ *  - la quantità di una determinata azione, se ne è in possesso. 
  *  - l'elenco delle azioni detenute in un determinato momento. 
  * 
  * Inoltre può effettuare operazioni di deposito e prelievo sul proprio budget rispettivamente per aggiungere o sottrarre denaro.  
@@ -34,9 +33,9 @@ public class Operatore implements Comparable<Operatore> {
 
     /**{@code ISTANZE} tiene traccia di tutti i nomi usati per definire gli operatori.*/ 
      private static final SortedSet<String> ISTANZE = new TreeSet<>();
-    /**{@code nome} è il nome che identifica l'operatore. */
+    /**{@code nome} il nome che identifica l'operatore. */
      private final String nome; 
-    /**{@code budget} è il budget che l'operatore ha a disposizione per comprare le azioni.*/
+    /**{@code budget} il budget che l'operatore ha a disposizione per comprare le azioni.*/
     private int budget;
     /**{@code azioniPossedute} una mappa che contiene tutte le azioni possedute da questo operatore, con associato per ogni azione la quantità posseduta.*/
     private final Map<Azione, Integer> azioniPossedute;
@@ -73,10 +72,10 @@ public class Operatore implements Comparable<Operatore> {
 
     /**
      * Costruisce una nuova istanza di operatore. 
-     * @param nomeOperatore nome del nuovo operatore.
+     * @param nome nome del nuovo operatore.
      */
-    private Operatore(String nomeOperatore) {
-        nome = nomeOperatore;
+    private Operatore(String nome) {
+        this.nome = nome;
         budget = 0; 
         azioniPossedute = new TreeMap<>();
     }
@@ -100,9 +99,9 @@ public class Operatore implements Comparable<Operatore> {
     /**
      * Restituisce la quantità di una determinata azione possedute da questo operatore.
      * @param azione l'azione di cui si vuole sapere la quantità posseduta.
-     * @return il numero di azioni, della specifica azienda, possedute da questo operatore.
-     * @throws NoSuchElementException se questo operatore non possiede azioni di questa azienda.
-     * @throws NullPointerException se l'azienda è null.
+     * @return il numero di azioni possedute da questo operatore.
+     * @throws NoSuchElementException se questo operatore non possiede questa azione.
+     * @throws NullPointerException se l'azione è null.
      */
     public int numeroAzioni(Azione azione) throws NoSuchElementException, NullPointerException {
       Objects.requireNonNull(azione, "L'azione non può essere null.");
@@ -123,8 +122,8 @@ public class Operatore implements Comparable<Operatore> {
     }
 
     /**
-     * Aggiorna l'elenco delle azioni, presenti in una determinata borsa, che questo operatore possiede confrontandosi con la borsa.
-     * Più precisamnte, per ogni azione presente nella borsa viene controllata la mappa dei proprietari, se nella mappa compare questo operatore viene aggiunta l'azione nella mappa delle azioni possedute con 
+     * Aggiorna l'elenco delle azioni che questo operatore possiede confrontandole con le azioni presenti nella borsa.
+     * Per ogni azione presente nella borsa viene controllata la mappa dei proprietari, se nella mappa compare questo operatore allora viene aggiunta l'azione nella mappa delle azioni possedute con 
      * il relativo quantitativo. 
      * @param borsa la borsa con il quale confrontare le azioni possedute.
      * @throws NullPointerException se la borsa è {@code null}.

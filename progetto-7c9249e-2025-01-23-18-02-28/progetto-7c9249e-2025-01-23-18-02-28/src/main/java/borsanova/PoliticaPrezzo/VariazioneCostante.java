@@ -10,12 +10,12 @@ import borsanova.Borsa.Azione;
  *  - In caso di acquisto, un incremento costante del valore dell'azione.
  */
 public class VariazioneCostante implements PoliticaPrezzo {
-    /**{@code variazione} è il valore della variazione costante */
+    /**{@code variazione} il valore della variazione costante */
     private final int variazione;
 
     /*-
      * AF:
-     *     - variazione: è la quantità di valore, aggiunto o tolto, all'azione in caso di acquisto o vendita.
+     *     - variazione: è il decremento o l'incremento del valore dell'azione rispettivamente, in caso di vendita o di acquisto della stessa.
      * IR:
      *     - variazione >= 0
      */

@@ -1,6 +1,5 @@
 package borsanova.politicaprezzo;
 
-// import java.util.*;
 import borsanova.Borsa.Azione;
 
 /**
@@ -11,12 +10,12 @@ import borsanova.Borsa.Azione;
  *  - In caso di acquisto, di una quantità di azioni maggiore rispetto alla soglia definita, un raddoppiamento del valore dell'azione.
  */
 public class Soglia implements PoliticaPrezzo {
-    /**{@code soglia} è il valore della soglia che se superata, in caso di acquisto o vendita, applica il cambiamento del valore delle azioni*/
+    /**{@code soglia} il valore della soglia che se superata, in caso di acquisto o vendita, applica il cambiamento del valore dell'azione*/
     private final int soglia;
 
     /*-
      * AF:
-     *     - soglia: è il numero di azioni che se superato va ad applicare il cambio del valore dell'azione.
+     *     - soglia: è la quantità di azioni che se superato va ad applicare il cambio del valore dell'azione.
      * IR:
      *     - soglia >= 0
      */
