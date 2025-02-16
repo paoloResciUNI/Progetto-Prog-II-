@@ -7,7 +7,7 @@ import java.util.Set;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa classe implementa l'interfaccia {@link PoliticaPrezzo}.
+ * Questa classe implementa l'interfaccia {@code PoliticaPrezzo}.
  * Definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto o di vendita della stessa.
  * Questa politica del prezzo prevede:
  *  - In caso di vendita, se l'iniziale del nome dell'azienda o l'iniziale del nome della borsa è il carattere {@code lettera} o una vocale, il valore dell'azione viene dimezzato.

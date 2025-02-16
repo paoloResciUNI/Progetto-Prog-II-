@@ -3,7 +3,7 @@ package borsanova.politicaprezzo;
 import borsanova.Borsa.Azione;
 
 /**
- * Questa classe implementa l'interfaccia {@link PoliticaPrezzo}.
+ * Questa classe implementa l'interfaccia {@code PoliticaPrezzo}.
  * Definisce la politica del prezzo che gestisce la variazione del valore di un'azione in caso di acquisto o di vendita della stessa.
  * Questa politica prezzo prevede:
  *  - In caso di vendita, di una quantità di azioni maggiore rispetto alla soglia definita, un dimezzamento del valore dell'azione. 
